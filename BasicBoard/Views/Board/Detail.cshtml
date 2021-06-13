@@ -13,7 +13,8 @@
                 <label>제목</label> @Model.BoardTitle
             </div>
             <div class="panel-body">
-                <label>내용</label> @Model.BoardContent
+                <label>내용</label>
+                @Html.Raw(Model.BoardContent)
             </div>
         </div>
         <div class="panel-footer text-right">
