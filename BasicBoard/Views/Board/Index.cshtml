@@ -14,7 +14,9 @@
             {
                 <tr>
                     <td>@board.BoardNo</td>
-                    <td>@board.BoardTitle</td>
+                    <td>
+                       <a asp-controller="board" asp-action="Detail" asp-route-boardNo="@board.BoardNo">@board.BoardTitle</a>
+                    </td>
                     <td>@board.UserNo</td>
                     <td>@board.BoardUpdateDate</td>
                     <td>@board.BoardViews</td>
