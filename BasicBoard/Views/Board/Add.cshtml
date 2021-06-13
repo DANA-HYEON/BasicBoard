@@ -1,0 +1,28 @@
+﻿@model BasicBoard.Models.Board 
+
+<div class="row">
+    <div class="col-lg-4"></div>
+    <div class="col-lg-4">
+        <form class="form-horizontal" asp-controller="Board" asp-action="Add" method="POST">
+            <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+            <div class="form-group">
+                <label>제목</label>
+                <input type="text" class="form-contorl" asp-for="BoardTitle" placeholder="제목을 입력해주세요." />
+                <span class="text-danger" asp-validation-for="BoardTitle"></span>
+            </div>
+
+            <div class="form-group">
+                <label>내용</label>
+                <textarea class="form-contorl" asp-for="BoardContent" rows="20" placeholder="제목을 입력해주세요."></textarea>
+                <span class="text-danger" asp-validation-for="BoardContent"></span>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">저장</button>
+                <a class="btn btn-warning" asp-controller="Board" asp-action="Index">게시판으로 돌아가기</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-lg-4"></div>
+</div>

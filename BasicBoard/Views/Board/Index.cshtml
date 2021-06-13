@@ -1,7 +1,26 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>수정일</th>
+            <th>조회수</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var board in Model)
+            {
+                <tr>
+                    <td>@board.BoardNo</td>
+                    <td>@board.BoardTitle</td>
+                    <td>@board.UserNo</td>
+                    <td>@board.BoardUpdateDate</td>
+                    <td>@board.BoardViews</td>
+                </tr>
+            }
+    </tbody>
+</table>
 
-<h1>BoardController - Index 페이지</h1>
+<a class="btn btn-warning" asp-controller="Board" asp-action="Add">게시물 작성하기</a>

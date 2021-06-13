@@ -10,17 +10,15 @@ namespace BasicBoard.Models
         [Key] //PK 설정
         public int BoardNo { get; set; } //게시물 번호
 
-        [Required]
+        [Required(ErrorMessage ="제목을 입력해주세요.")]
         public string BoardTitle { get; set; }  //게시물 제목
 
-        [Required]
+        [Required(ErrorMessage ="내용을 입력해주세요.")]
         public string BoardContent { get; set; } //게시물 내용
 
-        [DataType(DataType.Date)]
-        [Required]
+        [Timestamp]
         public DateTime BoardUpdateDate { get; set; } //게시물 등록날짜
 
-        [Required]
         public int BoardViews { get; set; } //게시물 조회수
 
         [Required]

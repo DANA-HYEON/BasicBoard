@@ -27,7 +27,8 @@ namespace BasicBoard
         {
             //DI
             //Identity
-            //Session
+            //Session - 서비스에 등록
+            services.AddSession();
             //Web API 미들웨어
             services.AddControllersWithViews();
 
@@ -45,6 +46,7 @@ namespace BasicBoard
             .EnableSensitiveDataLogging() //응용 프로그램 데이터를 예외 메시지, 로깅 등에 포함할 수 있도록 함
             .EnableDetailedErrors() //저장소 쿼리 결과를 처리 하는 동안 발생 하는 데이터 값 예외를 처리할 때 자세한 오류를 사용
             );
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,12 +69,16 @@ namespace BasicBoard
 
             app.UseAuthorization();
 
+            //이 Application 에서 사용하겠다 선언
+            app.UseSession();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
         }
     }
 }

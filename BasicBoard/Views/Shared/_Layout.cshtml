@@ -1,8 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" contenhttps://atoz-develop.tistory.com/entry/JSP-JSTL-%EC%82%AC%EC%9A%A9-%EB%B0%A9%EB%B2%95-%EC%A3%BC%EC%9A%94-%ED%83%9C%EA%B7%B8-%EB%AC%B8%EB%B2%95-%EC%A0%95%EB%A6%ACt="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BasicBoard</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
@@ -19,16 +21,21 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Board" asp-action="Index">게시판</a>
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">로그인</a>
-                        </li>
-                        <li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">회원가입</a>
-                        </li>
+                        @if (Context.Session.GetInt32("USER_LOGIN_KEY") == null)
+                        {
+
+                            <li><a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">로그인</a></li>
+                            <li><a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">회원가입</a></li>
+                        }
+                        else
+                        {
+                            <li><a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">로그아웃</a></li>
+
+                        }
                     </ul>
                 </div>
             </div>

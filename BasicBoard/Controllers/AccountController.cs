@@ -1,5 +1,7 @@
 ﻿using BasicBoard.Data;
 using BasicBoard.Models;
+using BasicBoard.ViewModel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
@@ -14,7 +16,7 @@ namespace BasicBoard.Controllers
         }
 
          [HttpPost]
-         public IActionResult Login(User model)
+         public IActionResult Login(LoginViewModel model)
          {
             //ID,비밀번호 - 필수
             if (ModelState.IsValid)
@@ -25,20 +27,26 @@ namespace BasicBoard.Controllers
                     //단순 메모리 위치상의 비교, 데이터 값도 비교한다. 메모리 누수를 방지 ==로 표시하면 새로운 string객체로 비교하기 때문에 메모리 누수 발생
                     var user = db.User.FirstOrDefault(u => u.UserId.Equals(model.UserId) && u.UserPassword.Equals(model.UserPassword));
 
-                    if(user == null)
-                    {
-                        //로그인에 실패했을 때
-                        ModelState.AddModelError(string.Empty, "사용자 ID 혹은 비밀번호가 올바르지 않습니다.");
-                    }
-                    else
+                    if(user != null)
                     {
                         //로그인에 성공했을 때
-                        return RedirectToAction("LoginSuccess", "Home");
+                        HttpContext.Session.SetInt32("USER_LOGIN_KEY", user.UserNo);
+                        return RedirectToAction("LoginSuccess", "Home"); //로그인 성공 페이지로 이동
                     }
+
                 }
+
+                //로그인에 실패했을 때
+                ModelState.AddModelError(string.Empty, "사용자 ID 혹은 비밀번호가 올바르지 않습니다.");
             }
              return View(model);
          }
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Remove("USER_LOGIN_KEY");
+            return RedirectToAction("Index", "Home");
+        }
 
         [HttpGet]
         public IActionResult Register() //회원가입
