@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "Trumbowyg@2.24.0",
+      "destination": "wwwroot/Trumbowyg/"
+    },
+    {
+      "library": "jquery@3.6.0",
+      "destination": "wwwroot/jquery/"
+    }
+  ]
+}
