@@ -1,7 +1,34 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model BasicBoard.Models.Board
+
 @{
+    ViewData["Title"] = "Edit Page";
 }
 
-<h1>BoardController - Index 페이지</h1>
+<h1>BoardController - Edit 페이지</h1>
+
+<div class="row">
+    <div class="col-lg-4"></div>
+    <div class="col-lg-4">
+        <form class="form-horizontal" asp-controller="Board" asp-action="Edit" method="POST">
+            <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+            <div class="form-group">
+                <label>제목</label>
+                <input type="text" class="form-contorl" asp-for="BoardTitle" value="@Model.BoardTitle"/>
+                <span class="text-danger" asp-validation-for="BoardTitle"></span>
+            </div>
+
+            <div class="form-group">
+                <label>내용</label>
+                <textarea class="form-contorl editor" asp-for="BoardContent" rows="20">@Model.BoardContent</textarea>
+                <span class="text-danger" asp-validation-for="BoardContent"></span>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" asp-route-boardNo="@Model.BoardNo">수정완료</button>
+                <a class="btn btn-warning" asp-controller="Board" asp-action="Index">게시판으로 돌아가기</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-lg-4"></div>
+</div>

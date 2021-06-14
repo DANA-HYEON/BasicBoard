@@ -2,6 +2,7 @@
 using BasicBoard.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,8 +87,8 @@ namespace BasicBoard.Controllers
             return View(model);
         }
 
-
-        public IActionResult Edit() //게시물 수정
+        [HttpGet]
+        public IActionResult Edit(int boardNo) //게시물 수정
         {
 
             if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
@@ -96,12 +97,66 @@ namespace BasicBoard.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
+            using (var db = new BasicboardDbContext())
+            {
+                var board = db.Board.FirstOrDefault(b => b.BoardNo.Equals(boardNo));
+                return View(board);
+            }
+        }
 
-            return View();
+        [HttpPost]
+        public IActionResult Edit(int boardNo, Board model) //게시물 수정
+        {
+
+            if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
+            {
+                //로그인이 안된 상태
+                return RedirectToAction("Login", "Account");
+            }
+
+            if(ModelState.IsValid)
+            {
+                
+                using (var db = new BasicboardDbContext())
+                {
+                    var board = db.Board.FirstOrDefault(b => b.BoardNo.Equals(boardNo)); //수정하려는 게시물 정보 DB에서 가져오기
+
+                    board.BoardTitle = model.BoardTitle; //제목 수정
+                    board.BoardContent = model.BoardContent; //내용 수정
+
+                    db.Update(board); 
+                    var result = db.SaveChanges();
+
+                    if(result > 0)
+                    {
+                        return Redirect("Index");
+                    }
+                }
+                ModelState.AddModelError(string.Empty, "게시물을 저장할 수 없습니다.");
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int boardNo) //게시물 삭제
+        {
+            if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
+            {
+                //로그인이 안된 상태
+                return RedirectToAction("Login", "Account");
+            }
+
+            using(var db = new BasicboardDbContext())
+            {
+                var board = db.Board.FirstOrDefault(b => b.BoardNo.Equals(boardNo)); //삭제하려는 게시물 정보 DB에서 가져오기
+                return View(board);
+            }
         }
 
 
-        public IActionResult Delete() //게시물 삭제
+        [HttpPost,ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int boardNo) //게시물 삭제
         {
             if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
             {
@@ -109,6 +164,22 @@ namespace BasicBoard.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
+            using (var db = new BasicboardDbContext())
+
+            {
+                var board = db.Board.FirstOrDefault(b => b.BoardNo.Equals(boardNo)); //삭제하려는 게시물 정보 DB에서 가져오기
+                if(board != null)
+                {
+                    db.Remove(board);
+                }
+
+                var result = db.SaveChanges();
+
+                if(result > 0)
+                {
+                    return View("Index","Board");
+                }
+            }
             return View();
         }
 

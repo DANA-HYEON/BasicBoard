@@ -26,6 +26,7 @@ namespace BasicBoard.Data
 
         public DbSet<User> User { get; set; }
         public DbSet<Board> Board { get; set; }
+        public DbSet<BasicBoard.Models.test> test { get; set; }
 
     }
 }
