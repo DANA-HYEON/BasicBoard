@@ -27,7 +27,7 @@
         <div class="panel-footer text-right">
             @if (Context.Session.GetInt32("USER_LOGIN_KEY") == @Model.UserNo)
             {
-                <form  asp-controller="Board" asp-action="Delete" method="POST">
+                <form name="frm" asp-controller="Board" asp-action="Delete" method="POST" onsubmit="return false">
                     <input type="hidden" asp-for="BoardNo" />
                     <input type="submit" value="게시물 삭제" class="btn btn-danger"/>
                     <a class="btn btn-primary" asp-controller="Board" asp-action="Index">목록으로 돌아가기</a>
@@ -41,3 +41,15 @@
         </div>
     </div>
 </div>
+
+<script>
+
+    let deleteBtn = document.querySelector(".btn-danger");
+    deleteBtn.onclick = function () {
+        let result = confirm("해당 게시물을 정말로 삭제하시겠습니까? 복구가 불가능합니다.");
+
+        if (result) {
+            document.frm.submit();
+        }
+    }
+</script>

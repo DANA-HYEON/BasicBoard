@@ -1,6 +1,14 @@
 ﻿@{
     ViewData["Title"] = "List Page";
 }
+<script>
+    var DeletedResult ='@Html.Raw(TempData["success"])';
+
+    if (DeletedResult != "")
+    {
+        alert(DeletedResult + "번 게시물이 정상적으로 삭제되었습니다.");
+    }
+</script>
 
 <table class="table table-bordered">
     <thead>
@@ -16,11 +24,11 @@
         @foreach (var board in Model)
         {
             <tr>
-                <td>@board.BoardNo</td>
+                <td>@board</td>
                 <td>
                     <a asp-controller="board" asp-action="Detail" asp-route-boardNo="@board.BoardNo">@board.BoardTitle</a>
                 </td>
-                <td>@board.UserNo</td>
+                <td>@*board.UserName*@</td>
                 <td>@board.BoardUpdateDate</td>
                 <td>@board.BoardViews</td>
             </tr>

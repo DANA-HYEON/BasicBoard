@@ -2,6 +2,7 @@
 using BasicBoard.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,26 @@ namespace BasicBoard.Controllers
 
             using(var db = new BasicboardDbContext())
             {
-                var list = db.Board.ToList(); //Board테이블의 모든 내용을 가져오기
+                //var list = db.Board.ToList(); //Board테이블의 모든 내용을 가져오기
+                /*var list = db.Board
+                    .Join(
+                        db.User,
+                        user => user.User.UserNo,
+                        board => board.UserNo,
+                        (board, user) => new
+                        {
+                            BoardNo = board.BoardNo,
+                            BoardTitle = board.BoardTitle,
+                            BoardContent = board.BoardContent,
+                            BoardUpdateDate = board.BoardUpdateDate,
+                            BoardViews = board.BoardViews,
+                            UserName = user.UserName
+                        }
+                    ).ToList();*/
+
+                var list = db.Board.ToList();
+
+                ViewData["test"] = list;
                 return View(list);
             }
             
@@ -177,7 +197,8 @@ namespace BasicBoard.Controllers
 
                 if(result > 0)
                 {
-                    return View("Index","Board");
+                    TempData["success"] = boardNo;
+                    return RedirectToAction("Index","Board");
                 }
             }
             return View();
