@@ -24,11 +24,11 @@
         @foreach (var board in Model)
         {
             <tr>
-                <td>@board</td>
+                <td>@board.BoardNo</td>
                 <td>
                     <a asp-controller="board" asp-action="Detail" asp-route-boardNo="@board.BoardNo">@board.BoardTitle</a>
                 </td>
-                <td>@*board.UserName*@</td>
+                <td>@board.UserName</td>
                 <td>@board.BoardUpdateDate</td>
                 <td>@board.BoardViews</td>
             </tr>
@@ -36,4 +36,18 @@
     </tbody>
 </table>
 
+
 <a class="btn btn-warning" asp-controller="Board" asp-action="Add">게시물 작성하기</a>
+<hr />
+<form asp-controller="Board" asp-action="Index" method="GET">
+    <p>
+        <select name="category">
+            <option value="BoardTitle">제목</option>
+            <option value="BoardContent">내용</option>
+            <option value="UserName">작성자</option>
+        </select>
+
+        <input type="text" name="SearchString">
+        <input type="submit" value="검색" />
+    </p>
+</form>
