@@ -26,5 +26,6 @@ namespace BasicBoard.Models
 
         [ForeignKey("UserNo")] //외래키
         public virtual User User { get; set; } //Join, lazy loading을 위한 virtual
+
     }
 }

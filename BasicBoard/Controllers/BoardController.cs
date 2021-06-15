@@ -14,9 +14,11 @@ namespace BasicBoard.Controllers
 {
     public class BoardController : Controller
     {
+        public int PAGE_SIZE = 10; //한 페이지에 보일 컨텐츠 갯수 
 
-        public IActionResult Index(string category, string searchString) //게시판 리스트
+        public IActionResult Index(int now_page, string category, string searchString, int page) //게시판 리스트
         {
+
             if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
             {
                 //로그인이 안된 상태
@@ -25,21 +27,23 @@ namespace BasicBoard.Controllers
 
             using (var db = new BasicboardDbContext())
             {
-                var list =  from b in db.Board
-                                         join u in db.User on b.UserNo equals u.UserNo
-                                         orderby b.BoardNo descending
-                                         select new BoardIndex
-                                         {
-                                             BoardNo = b.BoardNo,
-                                             BoardTitle = b.BoardTitle,
-                                             BoardContent = b.BoardContent,
-                                             BoardUpdateDate = b.BoardUpdateDate,
-                                             BoardViews = b.BoardViews,
-                                             UserName = u.UserName
-                                         };
+
+                var list = (from b in db.Board
+                           join u in db.User on b.UserNo equals u.UserNo
+                           orderby b.BoardNo descending
+                           select new BoardIndex
+                           {
+                               BoardNo = b.BoardNo,
+                               BoardTitle = b.BoardTitle,
+                               BoardContent = b.BoardContent,
+                               BoardUpdateDate = b.BoardUpdateDate,
+                               BoardViews = b.BoardViews,
+                               UserName = u.UserName
+                           }).Skip(now_page).Take(PAGE_SIZE);
 
                 if (!String.IsNullOrEmpty(searchString) && !String.IsNullOrEmpty(category))
                 {
+                    //검색키워드의 앞뒤 공백 제거
                     searchString = searchString.Trim();
 
                     switch (category)
@@ -57,6 +61,9 @@ namespace BasicBoard.Controllers
                             break;
                     }
                 }
+
+                ViewBag.now_page = now_page;
+                ViewBag.PAGE_SIZE = PAGE_SIZE;
 
                 return View(list.ToList());
             }
@@ -77,7 +84,6 @@ namespace BasicBoard.Controllers
                 var board = db.Board.FirstOrDefault(b => b.BoardNo.Equals(boardNo));
                 return View(board);
             }
-
         }
 
         public IActionResult Add() //게시물 추가
@@ -101,7 +107,7 @@ namespace BasicBoard.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            model.UserNo = int.Parse(HttpContext.Session.GetInt32("USER_LOGIN_KEY").ToString());
+            model.UserNo = int.Parse(HttpContext.Session.GetInt32("USER_LOGIN_KEY").ToString()); //세션에 저장된 UserNo가져오기(로그인 정보)
 
             if (ModelState.IsValid)
             {

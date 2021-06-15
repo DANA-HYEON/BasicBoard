@@ -1,6 +1,11 @@
 ﻿@{
     ViewData["Title"] = "List Page";
+
+
+    int startPage = (ViewBag.now_page *ViewBag.PAGE_SIZE)+1;
+    int lastPage = startPage+9;
 }
+
 <script>
     var DeletedResult ='@Html.Raw(TempData["success"])';
 
@@ -9,6 +14,22 @@
         alert(DeletedResult + "번 게시물이 정상적으로 삭제되었습니다.");
     }
 </script>
+
+<a class="btn btn-warning" asp-controller="Board" asp-action="Add">게시물 작성하기</a>
+<hr />
+<form asp-controller="Board" asp-action="Index" method="GET">
+    <p>
+        <select name="category" style="height:29.5px;">
+            <option value="BoardTitle">제목</option>
+            <option value="BoardContent">내용</option>
+            <option value="UserName">작성자</option>
+        </select>
+
+        <input type="text" name="SearchString">
+        <input type="submit" value="검색" />
+    </p>
+</form>
+
 
 <table class="table table-bordered">
     <thead>
@@ -36,18 +57,19 @@
     </tbody>
 </table>
 
+<nav aria-label="...">
+    <ul class="pagination" style="justify-content:center;">
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
 
-<a class="btn btn-warning" asp-controller="Board" asp-action="Add">게시물 작성하기</a>
-<hr />
-<form asp-controller="Board" asp-action="Index" method="GET">
-    <p>
-        <select name="category">
-            <option value="BoardTitle">제목</option>
-            <option value="BoardContent">내용</option>
-            <option value="UserName">작성자</option>
-        </select>
+        @for (int i = startPage; i <= lastPage; i++)
+        {
+            <li class="page-item"><a class="page-link" href="#">@i</a></li>
+        }
+        <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+        </li>
+    </ul>
+</nav>
 
-        <input type="text" name="SearchString">
-        <input type="submit" value="검색" />
-    </p>
-</form>
