@@ -62,7 +62,8 @@ namespace BasicBoard.Controllers
                     }
                 }
 
-                int total = db.Board.Count();
+                int total = db.Board.Count(); //전체 게시물 갯수
+
                 ViewData["pageMaker"] = new PageDTO(cri, total);
                 return View(list.ToList());
             }
@@ -117,6 +118,11 @@ namespace BasicBoard.Controllers
 
                     if (result > 0)
                     {
+                        var insertedRow = (from b in db.Board
+                                           orderby b.BoardNo descending
+                                           select b).FirstOrDefault();
+
+                        TempData["success"] = insertedRow.BoardNo;
                         return Redirect("Index"); //RedirectToAction은 컨트롤러의 입력 유무(Index가 입력된 컨트롤러 호출)
                     }
                 }
@@ -168,6 +174,7 @@ namespace BasicBoard.Controllers
 
                     if (result > 0)
                     {
+                        TempData["success"] = boardNo;
                         return Redirect("Index");
                     }
                 }

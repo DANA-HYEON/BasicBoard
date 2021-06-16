@@ -73,12 +73,12 @@
 
 
 <script language="javascript" type="text/javascript">
-    //게시물 삭제시 alert
+    //게시물 crud 성공 시 alert
     var DeletedResult ='@Html.Raw(TempData["success"])';
 
     if (DeletedResult != "")
     {
-        alert(DeletedResult + "번 게시물이 정상적으로 삭제되었습니다.");
+        alert(DeletedResult + "번 게시물이 정상적으로 처리되었습니다.");
     }
 
 
