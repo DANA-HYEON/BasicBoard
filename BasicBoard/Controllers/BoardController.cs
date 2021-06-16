@@ -14,9 +14,9 @@ namespace BasicBoard.Controllers
 {
     public class BoardController : Controller
     {
-        public int PAGE_SIZE = 10; //한 페이지에 보일 컨텐츠 갯수 
+        //public int PAGE_SIZE = 10; //한 페이지에 보일 컨텐츠 갯수 
 
-        public IActionResult Index(int now_page, string category, string searchString, int page) //게시판 리스트
+        public IActionResult Index(Criteria cri, string category, string searchString) //게시판 리스트
         {
 
             if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
@@ -39,7 +39,7 @@ namespace BasicBoard.Controllers
                                BoardUpdateDate = b.BoardUpdateDate,
                                BoardViews = b.BoardViews,
                                UserName = u.UserName
-                           }).Skip(now_page).Take(PAGE_SIZE);
+                           }).Skip((cri.pageNum-1)*cri.amount).Take(cri.amount); //  Take : 컨텐츠 갯수
 
                 if (!String.IsNullOrEmpty(searchString) && !String.IsNullOrEmpty(category))
                 {
@@ -62,9 +62,8 @@ namespace BasicBoard.Controllers
                     }
                 }
 
-                ViewBag.now_page = now_page;
-                ViewBag.PAGE_SIZE = PAGE_SIZE;
-
+                int total = db.Board.Count();
+                ViewData["pageMaker"] = new PageDTO(cri, total);
                 return View(list.ToList());
             }
 
