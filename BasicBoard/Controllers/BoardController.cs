@@ -82,6 +82,10 @@ namespace BasicBoard.Controllers
             using (var db = new BasicboardDbContext())
             {
                 var board = db.Board.FirstOrDefault(b => b.BoardNo.Equals(boardNo));
+                board.BoardViews = board.BoardViews + 1; //조회수 count
+                db.Update(board); // 조회수 db 업데이트
+                db.SaveChanges();
+
                 return View(board);
             }
         }
@@ -144,7 +148,7 @@ namespace BasicBoard.Controllers
 
             using (var db = new BasicboardDbContext())
             {
-                var board = db.Board.FirstOrDefault(b => b.BoardNo.Equals(boardNo));
+                var board = db.Board.FirstOrDefault(b => b.BoardNo.Equals(boardNo)); //게시물 불러오기
                 return View(board);
             }
         }
