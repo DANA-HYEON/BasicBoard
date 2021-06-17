@@ -19,7 +19,6 @@
     </p>
 </form>
 
-
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -31,13 +30,14 @@
         </tr>
     </thead>
     <tbody>
+
         @foreach (var board in Model)
         {
             <tr>
                 <td>@board.BoardNo</td>
-                <td>
-                    <a asp-controller="board" asp-action="Detail" asp-route-boardNo="@board.BoardNo">@board.BoardTitle</a>
-                </td>
+
+                <td><a class="move" href="@board.BoardNo">@board.BoardTitle</a></td>
+
                 <td>@board.UserName</td>
                 <td>@board.BoardUpdateDate</td>
                 <td>@board.BoardViews</td>
@@ -60,19 +60,22 @@
 
         @if (pageMaker.next)
         {
-            <li class="page-item"><a class="page-link" href="@(pageMaker.endPage +1)" >Next</a></li>
+            <li class="page-item"><a class="page-link" href="@(pageMaker.endPage +1)">Next</a></li>
         }
     </ul>
 
-    <form name="frm" asp-controller="Board" asp-action="Index" method="GET">
-        <input type="hidden" name="pageNum" vlaue="@pageMaker.cri.pageNum" />
-        <input type="hidden" name="amount" value="@pageMaker.cri.amount" />
-    </form>
 </nav>
 
+<form id="actionForm"  action="/Board/Index" method="GET">
+    <input type="hidden" name="pageNum" value="@pageMaker.cri.pageNum" />
+    <input type="hidden" name="amount" value="@pageMaker.cri.amount" />
+</form>
 
 
 <script language="javascript" type="text/javascript">
+
+    let actionForm = $("#actionForm");
+
     //게시물 crud 성공 시 alert
     var DeletedResult ='@Html.Raw(TempData["success"])';
 
@@ -91,7 +94,28 @@
         pagelink[i].addEventListener("click", function (event) {
             event.preventDefault(); //a태그 기능 막기
             pageNumber.value = event.target.getAttribute("href");
-            document.frm.submit();
+            actionForm.submit();
         });
     }
+
+    //페이징+게시물 조회를 위한 이벤트 처리
+    $(".move").on("click", function (e) {
+        e.preventDefault();
+        console.log($(this).attr("href"));
+        actionForm.append("<input type='hidden' name='boardNo' value='" + $(this).attr("href") + "'>");
+        actionForm.attr("action", "/Board/Detail");
+        actionForm.submit();
+    });
+
+
+@*    for (var i = 0; i < move.length; i++) {
+        move[i].onclick = function (event)
+        {
+            event.preventDefault();
+            let boardNo = event.target.getAttribute("href");
+            actionForm.append("<input type='hidden' name='boardNo' value='" + boardNo + "'>");
+            actionForm.attr("action", "Board/Detail");
+            actionForm.submit;
+        }
+    }*@
 </script>

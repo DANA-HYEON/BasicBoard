@@ -2,6 +2,7 @@
 @model BasicBoard.Models.Board
 @{
     ViewData["Title"] = "Delete Page";
+    var cri = ViewData["cri"] as Criteria;
 }
 
 <h1>게시물 삭제</h1>
@@ -27,11 +28,13 @@
         <div class="panel-footer text-right">
             @if (Context.Session.GetInt32("USER_LOGIN_KEY") == @Model.UserNo)
             {
-                <form name="frm" asp-controller="Board" asp-action="Delete" method="POST" onsubmit="return false">
-                    <input type="hidden" asp-for="BoardNo" />
-                    <input type="submit" value="게시물 삭제" class="btn btn-danger"/>
-                    <a class="btn btn-primary" asp-controller="Board" asp-action="Index">목록으로 돌아가기</a>
-                </form>
+            <form name="frm" asp-controller="Board" asp-action="Delete" method="POST" onsubmit="return false">
+                <input type="hidden" asp-for="BoardNo" />
+                <input type="hidden" name="pageNum" value="@cri.pageNum" />
+                <input type="hidden" name="amount" value="@cri.amount" />
+                <input type="submit" value="게시물 삭제" class="btn btn-danger" />
+                <a class="btn btn-primary" asp-controller="Board" asp-action="Index">목록으로 돌아가기</a>
+            </form>
                
             }
             else

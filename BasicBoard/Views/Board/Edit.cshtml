@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit Page";
+    var cri = ViewData["cri"] as Criteria;
 }
 
 <h1>BoardController - Edit 페이지</h1>
@@ -9,7 +10,7 @@
 <div class="row">
     <div class="col-lg-4"></div>
     <div class="col-lg-4">
-        <form class="form-horizontal" asp-controller="Board" asp-action="Edit" method="POST">
+        <form id="operForm" class="form-horizontal" action="/Board/Edit" method="POST">
             <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 
             <div class="form-group">
@@ -25,10 +26,23 @@
             </div>
 
             <div class="form-group">
-                <button type="submit" class="btn btn-primary" asp-route-boardNo="@Model.BoardNo">수정완료</button>
+                <input type="hidden" name="pageNum" value="@cri.pageNum" />
+                <input type="hidden" name="amount" value="@cri.amount" />
+                <button type="submit" class="btn btn-primary" data-oper="Edit" asp-route-boardNo="@Model.BoardNo" >수정완료</button>
                 <a class="btn btn-warning" asp-controller="Board" asp-action="Index">게시판으로 돌아가기</a>
             </div>
         </form>
     </div>
     <div class="col-lg-4"></div>
 </div>
+
+
+<script>
+
+    var operForm = $("#operForm");
+
+@*    $("button[data-oper='Edit'").on("click", function (e) {
+        e.preventDefault();
+        operForm.attr("action", "/Board/Edit").submit();
+    });*@
+</script>

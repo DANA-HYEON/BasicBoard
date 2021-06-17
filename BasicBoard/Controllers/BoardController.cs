@@ -25,53 +25,57 @@ namespace BasicBoard.Controllers
 
             using (var db = new BasicboardDbContext())
             {
+                //전체 게시물 가져오기
+                var totalList = from b in db.Board
+                                join u in db.User on b.UserNo equals u.UserNo
+                                orderby b.BoardNo descending
+                                select new BoardIndex
+                                {
+                                    BoardNo = b.BoardNo,
+                                    BoardTitle = b.BoardTitle,
+                                    BoardContent = b.BoardContent,
+                                    BoardUpdateDate = b.BoardUpdateDate,
+                                    BoardViews = b.BoardViews,
+                                    UserName = u.UserName
+                                };
 
-                var list = (from b in db.Board
-                            join u in db.User on b.UserNo equals u.UserNo
-                            orderby b.BoardNo descending
-                            select new BoardIndex
-                            {
-                                BoardNo = b.BoardNo,
-                                BoardTitle = b.BoardTitle,
-                                BoardContent = b.BoardContent,
-                                BoardUpdateDate = b.BoardUpdateDate,
-                                BoardViews = b.BoardViews,
-                                UserName = u.UserName
-                            }).Skip((cri.pageNum - 1) * cri.amount).Take(cri.amount); //  Take : 컨텐츠 갯수
+                int total = totalList.Count();//전체 게시물 갯수
 
                 if (!String.IsNullOrEmpty(searchString) && !String.IsNullOrEmpty(category))
                 {
                     //검색키워드의 앞뒤 공백 제거
                     searchString = searchString.Trim();
-
                     switch (category)
                     {
                         case "BoardTitle":
-                            list = list.Where(s => s.BoardTitle.Contains(searchString));
+                            totalList = totalList.Where(s => s.BoardTitle.Contains(searchString)); //해당 키워드가 포함된 게시물 리스트
+                            total = totalList.Count(); //검색된 리스트 갯수
                             break;
 
                         case "BoardContent":
-                            list = list.Where(s => s.BoardContent.Contains(searchString));
+                            totalList = totalList.Where(s => s.BoardContent.Contains(searchString));
+                            total = totalList.Count();
                             break;
 
                         case "UserName":
-                            list = list.Where(s => s.UserName.Contains(searchString));
+                            totalList = totalList.Where(s => s.UserName.Contains(searchString));
+                            total = totalList.Count();
                             break;
                     }
                 }
 
-                int total = db.Board.Count(); //전체 게시물 갯수
-
                 ViewData["pageMaker"] = new PageDTO(cri, total);
-                return View(list.ToList());
+
+                var list = totalList.Skip((cri.pageNum - 1) * cri.amount).Take(cri.amount).ToList(); //페이징
+
+                return View(list);
             }
 
         }
 
 
-        public IActionResult Detail(int boardNo) //게시판 상세
+        public IActionResult Detail(Criteria cri, int boardNo) //게시판 상세
         {
-
             var USER_LOGIN_KEY = HttpContext.Session.GetInt32("USER_LOGIN_KEY"); //세선에 저장된 userNo 불러오기
             string cookieResult = USER_LOGIN_KEY + "_" + boardNo; //userNo+boardNo 고유 값 생성 
 
@@ -115,6 +119,7 @@ namespace BasicBoard.Controllers
                     }
                 }
 
+                ViewData["cri"] = cri;
                 return View(board);
             }
         }
@@ -166,7 +171,7 @@ namespace BasicBoard.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int boardNo) //게시물 수정
+        public IActionResult Edit(Criteria cri, int boardNo) //게시물 수정
         {
 
             if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
@@ -178,12 +183,13 @@ namespace BasicBoard.Controllers
             using (var db = new BasicboardDbContext())
             {
                 var board = db.Board.FirstOrDefault(b => b.BoardNo.Equals(boardNo)); //게시물 불러오기
+                ViewData["cri"] = cri;
                 return View(board);
             }
         }
 
         [HttpPost]
-        public IActionResult Edit(int boardNo, Board model) //게시물 수정
+        public IActionResult Edit(Criteria cri, int boardNo, Board model) //게시물 수정
         {
 
             if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
@@ -208,7 +214,7 @@ namespace BasicBoard.Controllers
                     if (result > 0)
                     {
                         TempData["success"] = boardNo;
-                        return Redirect("Index");
+                        return RedirectToAction("Index", cri);
                     }
                 }
                 ModelState.AddModelError(string.Empty, "게시물을 저장할 수 없습니다.");
@@ -217,7 +223,7 @@ namespace BasicBoard.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int boardNo) //게시물 삭제
+        public IActionResult Delete(Criteria cri, int boardNo) //게시물 삭제
         {
             if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
             {
@@ -228,6 +234,7 @@ namespace BasicBoard.Controllers
             using (var db = new BasicboardDbContext())
             {
                 var board = db.Board.FirstOrDefault(b => b.BoardNo.Equals(boardNo)); //삭제하려는 게시물 정보 DB에서 가져오기
+                ViewData["cri"] = cri;
                 return View(board);
             }
         }
@@ -235,7 +242,7 @@ namespace BasicBoard.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int boardNo) //게시물 삭제
+        public IActionResult DeleteConfirmed(Criteria cri, int boardNo) //게시물 삭제
         {
             if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
             {
@@ -257,7 +264,7 @@ namespace BasicBoard.Controllers
                 if (result > 0)
                 {
                     TempData["success"] = boardNo;
-                    return RedirectToAction("Index", "Board");
+                    return RedirectToAction("Index", cri);
                 }
             }
             return View();
