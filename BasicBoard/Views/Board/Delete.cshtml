@@ -32,6 +32,9 @@
                 <input type="hidden" asp-for="BoardNo" />
                 <input type="hidden" name="pageNum" value="@cri.pageNum" />
                 <input type="hidden" name="amount" value="@cri.amount" />
+                <input type="hidden" name="category" value="@cri.category" />
+                <input type="hidden" name="searchString" value="@cri.searchString" />
+
                 <input type="submit" value="게시물 삭제" class="btn btn-danger" />
                 <a class="btn btn-primary" asp-controller="Board" asp-action="Index">목록으로 돌아가기</a>
             </form>

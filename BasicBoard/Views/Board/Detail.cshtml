@@ -32,9 +32,11 @@
 </div>
 
 <form id="operForm" action="/Board/Index" method="GET">
-    <input type="hidden" name="boardNo"  value="@Model.BoardNo" />
+    <input type="hidden" name="boardNo" value="@Model.BoardNo" />
     <input type="hidden" name="pageNum" value="@cri.pageNum" />
     <input type="hidden" name="amount" value="@cri.amount" />
+    <input type="hidden" name="category" value="@cri.category" />
+    <input type="hidden" name="searchString" value="@cri.searchString" />
 </form>
 
 <script>

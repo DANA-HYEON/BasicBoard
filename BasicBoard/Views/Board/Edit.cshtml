@@ -28,21 +28,12 @@
             <div class="form-group">
                 <input type="hidden" name="pageNum" value="@cri.pageNum" />
                 <input type="hidden" name="amount" value="@cri.amount" />
-                <button type="submit" class="btn btn-primary" data-oper="Edit" asp-route-boardNo="@Model.BoardNo" >수정완료</button>
+                <input type="hidden" name="category" value="@cri.category" />
+                <input type="hidden" name="searchString" value="@cri.searchString" />
+                <button type="submit" class="btn btn-primary" data-oper="Edit" asp-route-boardNo="@Model.BoardNo">수정완료</button>
                 <a class="btn btn-warning" asp-controller="Board" asp-action="Index">게시판으로 돌아가기</a>
             </div>
         </form>
     </div>
     <div class="col-lg-4"></div>
 </div>
-
-
-<script>
-
-    var operForm = $("#operForm");
-
-@*    $("button[data-oper='Edit'").on("click", function (e) {
-        e.preventDefault();
-        operForm.attr("action", "/Board/Edit").submit();
-    });*@
-</script>

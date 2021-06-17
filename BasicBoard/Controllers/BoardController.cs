@@ -14,7 +14,7 @@ namespace BasicBoard.Controllers
 {
     public class BoardController : Controller
     {
-        public IActionResult Index(Criteria cri, string category, string searchString) //게시판 리스트
+        public IActionResult Index(Criteria cri) //게시판 리스트
         {
 
             if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
@@ -41,11 +41,11 @@ namespace BasicBoard.Controllers
 
                 int total = totalList.Count();//전체 게시물 갯수
 
-                if (!String.IsNullOrEmpty(searchString) && !String.IsNullOrEmpty(category))
+                if (!String.IsNullOrEmpty(cri.searchString) && !String.IsNullOrEmpty(cri.category))
                 {
                     //검색키워드의 앞뒤 공백 제거
-                    searchString = searchString.Trim();
-                    switch (category)
+                    string searchString = cri.searchString.Trim();
+                    switch (cri.category)
                     {
                         case "BoardTitle":
                             totalList = totalList.Where(s => s.BoardTitle.Contains(searchString)); //해당 키워드가 포함된 게시물 리스트
