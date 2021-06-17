@@ -73,7 +73,8 @@ namespace BasicBoard.Controllers
         {
 
             var USER_LOGIN_KEY = HttpContext.Session.GetInt32("USER_LOGIN_KEY"); //세선에 저장된 userNo 불러오기
-            string cookieResult = USER_LOGIN_KEY + "" + boardNo; //userNo+boardNo 고유 값 생성 
+            string cookieResult = USER_LOGIN_KEY + "_" + boardNo; //userNo+boardNo 고유 값 생성 
+
 
             if (USER_LOGIN_KEY == null)
             {
@@ -85,18 +86,33 @@ namespace BasicBoard.Controllers
             {
                 var board = db.Board.FirstOrDefault(b => b.BoardNo.Equals(boardNo)); //게시물 불러오기
 
+                
                 //쿠키읽기
                 string cookieValue = Request.Cookies["visit"];
-                if (!cookieValue.Contains(cookieResult)) //불러온 쿠키에 고유값 저장되어있는지 체크
+
+                if(string.IsNullOrEmpty(cookieValue)) //쿠키값이 없으면
                 {
-                    //쿠키값이 없으면 쿠키 생성 + 조회수 증가
+
+                    //쿠키 생성 + 조회수 증가
                     CookieOptions options = new CookieOptions();
                     Response.Cookies.Append("visit", cookieResult);
 
                     board.BoardViews = board.BoardViews + 1; //조회수 count
                     db.Update(board); // 조회수 db 업데이트
                     db.SaveChanges(); //commit
+                }
+                else //쿠키값이 있으면
+                {
+                    if (!cookieValue.Contains(cookieResult)) //불러온 쿠키에 고유값 있는지 체크
+                    {
+                        //쿠키 생성 + 조회수 증가
+                        CookieOptions options = new CookieOptions();
+                        Response.Cookies.Append("visit", cookieResult);
 
+                        board.BoardViews = board.BoardViews + 1; //조회수 count
+                        db.Update(board); // 조회수 db 업데이트
+                        db.SaveChanges(); //commit
+                    }
                 }
 
                 return View(board);
