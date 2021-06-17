@@ -14,8 +14,6 @@ namespace BasicBoard.Controllers
 {
     public class BoardController : Controller
     {
-        //public int PAGE_SIZE = 10; //한 페이지에 보일 컨텐츠 갯수 
-
         public IActionResult Index(Criteria cri, string category, string searchString) //게시판 리스트
         {
 
@@ -29,17 +27,17 @@ namespace BasicBoard.Controllers
             {
 
                 var list = (from b in db.Board
-                           join u in db.User on b.UserNo equals u.UserNo
-                           orderby b.BoardNo descending
-                           select new BoardIndex
-                           {
-                               BoardNo = b.BoardNo,
-                               BoardTitle = b.BoardTitle,
-                               BoardContent = b.BoardContent,
-                               BoardUpdateDate = b.BoardUpdateDate,
-                               BoardViews = b.BoardViews,
-                               UserName = u.UserName
-                           }).Skip((cri.pageNum-1)*cri.amount).Take(cri.amount); //  Take : 컨텐츠 갯수
+                            join u in db.User on b.UserNo equals u.UserNo
+                            orderby b.BoardNo descending
+                            select new BoardIndex
+                            {
+                                BoardNo = b.BoardNo,
+                                BoardTitle = b.BoardTitle,
+                                BoardContent = b.BoardContent,
+                                BoardUpdateDate = b.BoardUpdateDate,
+                                BoardViews = b.BoardViews,
+                                UserName = u.UserName
+                            }).Skip((cri.pageNum - 1) * cri.amount).Take(cri.amount); //  Take : 컨텐츠 갯수
 
                 if (!String.IsNullOrEmpty(searchString) && !String.IsNullOrEmpty(category))
                 {
@@ -73,7 +71,11 @@ namespace BasicBoard.Controllers
 
         public IActionResult Detail(int boardNo) //게시판 상세
         {
-            if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
+
+            var USER_LOGIN_KEY = HttpContext.Session.GetInt32("USER_LOGIN_KEY"); //세선에 저장된 userNo 불러오기
+            string cookieResult = USER_LOGIN_KEY + "" + boardNo; //userNo+boardNo 고유 값 생성 
+
+            if (USER_LOGIN_KEY == null)
             {
                 //로그인이 안된 상태
                 return RedirectToAction("Login", "Account");
@@ -81,10 +83,21 @@ namespace BasicBoard.Controllers
 
             using (var db = new BasicboardDbContext())
             {
-                var board = db.Board.FirstOrDefault(b => b.BoardNo.Equals(boardNo));
-                board.BoardViews = board.BoardViews + 1; //조회수 count
-                db.Update(board); // 조회수 db 업데이트
-                db.SaveChanges();
+                var board = db.Board.FirstOrDefault(b => b.BoardNo.Equals(boardNo)); //게시물 불러오기
+
+                //쿠키읽기
+                string cookieValue = Request.Cookies["visit"];
+                if (!cookieValue.Contains(cookieResult)) //불러온 쿠키에 고유값 저장되어있는지 체크
+                {
+                    //쿠키값이 없으면 쿠키 생성 + 조회수 증가
+                    CookieOptions options = new CookieOptions();
+                    Response.Cookies.Append("visit", cookieResult);
+
+                    board.BoardViews = board.BoardViews + 1; //조회수 count
+                    db.Update(board); // 조회수 db 업데이트
+                    db.SaveChanges(); //commit
+
+                }
 
                 return View(board);
             }
@@ -126,7 +139,7 @@ namespace BasicBoard.Controllers
                                            orderby b.BoardNo descending
                                            select b).FirstOrDefault();
 
-                        TempData["success"] = insertedRow.BoardNo;
+                        TempData["success"] = insertedRow.BoardNo; //다른 요청에서 읽혀질때까지만 데이터를 저장(쿠키 또는 세선 상태를 사용해서 구현)
                         return Redirect("Index"); //RedirectToAction은 컨트롤러의 입력 유무(Index가 입력된 컨트롤러 호출)
                     }
                 }

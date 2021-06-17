@@ -3,13 +3,44 @@
     ViewData["Title"] = "Detail Page";
 }
 
-<div class="row">
-    <div class="col-lg-12">
-        <h3 class="page-header">상세 읽기 - @Model.BoardTitle</h3>
+<header class="masthead" style="background-image: url('~/wwwroot/assets/img/post-bg.jpg')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-left">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading">
+                    <h1>@Model.BoardTitle</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Main Content-->
+<hr />
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-left">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <!-- Post preview-->
+            <div class="post-preview">
+                    <h3 class="post-subtitle">@Html.Raw(Model.BoardContent)</h3>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="panel-footer text-right">
+        @if (Context.Session.GetInt32("USER_LOGIN_KEY") == @Model.UserNo)
+        {
+            <a class="btn btn-warning" asp-controller="Board" asp-action="Edit" asp-route-boardNo="@Model.BoardNo">게시물 수정하기</a>
+            <a class="btn btn-danger" asp-controller="Board" asp-action="Delete" asp-route-boardNo="@Model.BoardNo">게시물 삭제하기</a>
+            <a class="btn btn-primary" asp-controller="Board" asp-action="Index">목록으로 돌아가기</a>
+        }
+        else
+        {
+            <a class="btn btn-primary" asp-controller="Board" asp-action="Index">목록으로 돌아가기</a>
+        }
     </div>
 </div>
 
-<div class="row">
+@*<div class="row">
     <div class="col-lg-10">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -33,4 +64,4 @@
             }
         </div>
     </div>
-</div>
+</div>*@
