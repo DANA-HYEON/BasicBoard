@@ -9,12 +9,6 @@
 <h2>정말로 이 게시물을 삭제하시겠습니까?</h2>
 
 <div class="row">
-    <div class="col-lg-12">
-        <h3 class="page-header">상세 읽기 - @Model.BoardTitle</h3>
-    </div>
-</div>
-
-<div class="row">
     <div class="col-lg-10">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -25,7 +19,7 @@
                 @Html.Raw(Model.BoardContent)
             </div>
         </div>
-        <div class="panel-footer text-right">
+        <div class="text-right">
             @if (Context.Session.GetInt32("USER_LOGIN_KEY") == @Model.UserNo)
             {
             <form name="frm" asp-controller="Board" asp-action="Delete" method="POST" onsubmit="return false">

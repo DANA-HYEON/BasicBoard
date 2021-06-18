@@ -26,5 +26,6 @@ namespace BasicBoard.Data
 
         public DbSet<User> User { get; set; }
         public DbSet<Board> Board { get; set; }
+        public DbSet<Reply> Reply { get; set; }
     }
 }

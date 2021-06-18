@@ -18,5 +18,6 @@ namespace BasicBoard.ViewModel
         public int BoardViews { get; set; } //게시물 조회수
 
         public string UserName { get; set; } //등록자
+
     }
 }

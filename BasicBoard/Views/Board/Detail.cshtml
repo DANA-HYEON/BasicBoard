@@ -5,31 +5,92 @@
     var cri = ViewData["cri"] as Criteria;
 }
 
-<div class="row">
-    <div class="col-lg-10">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <label>제목</label> @Model.BoardTitle
+    <div class="row">
+        <div class="col-lg-10">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2>@Model.BoardTitle</h2>
+                </div>
+                <div class="panel-body">
+                    @*내용*@
+                    @Html.Raw(Model.BoardContent)
+                </div>
             </div>
-            <div class="panel-body">
-                <label>내용</label>
-                @Html.Raw(Model.BoardContent)
+            <div class="text-right">
+                @*@*panel-footer*@
+                @if (Context.Session.GetInt32("USER_LOGIN_KEY") == @Model.UserNo)
+                {
+                    <button data-oper="Edit" class="btn btn-warning">게시물 수정하기</button>
+                    <button data-oper="Delete" class="btn btn-danger">게시물 삭제하기</button>
+                    <button data-oper="Index" class="btn btn-primary">목록으로 돌아가기</button>
+                }
+                else
+                {
+                    <button data-oper="Index" class="btn btn-primary">목록으로 돌아가기</button>
+                }
             </div>
-        </div>
-        <div class="panel-footer text-right">
-            @if (Context.Session.GetInt32("USER_LOGIN_KEY") == @Model.UserNo)
-            {
-                <button data-oper="Edit" class="btn btn-warning">게시물 수정하기</button>
-                <button data-oper="Delete" class="btn btn-danger">게시물 삭제하기</button>
-                <button data-oper="Index" class="btn btn-primary">목록으로 돌아가기</button>
-            }
-            else
-            {
-                <button data-oper="Index" class="btn btn-primary">목록으로 돌아가기</button>
-            }
+
+            <div>
+                <div class="page-header">
+                    <h3 class="reviews">Leave your comment</h3>
+                </div>
+
+                <div class="comment-tabs">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="comments-logout">
+                            <ul class="media-list">
+                                <li class="media">
+                                    <div class="media-body">
+                                        <div class="well well-lg">
+                                            <div class="flex">
+                                                <h4 class="media-heading text-uppercase reviews">댓글단 사람 아이디! </h4>
+                                                <ul class="media-date text-uppercase reviews list-inline">
+                                                    <li class="dd">2021.03.11</li>
+                                                </ul>
+                                            </div>
+                                            <p class="media-comment">
+                                                댓글 내용 댓글 내용 와우 당신 글을 잘쓰는걸~?
+                                            </p>
+                                            <a class="btn btn-info btn-circle text-uppercase" href="#" id="reply"><span class="glyphicon glyphicon-share-alt"></span> 답장</a>
+                                            <a class="btn btn-warning btn-circle text-uppercase" data-toggle="collapse" href=""><span class="glyphicon glyphicon-comment"></span> 2 대댓글</a>
+                                        </div>
+
+                                        <div class="well well-lg">
+                                            <div class="flex">
+                                                <h4 class="media-heading text-uppercase reviews">댓글단 사람 아이디! </h4>
+                                                <ul class="media-date text-uppercase reviews list-inline">
+                                                    <li class="dd">2021.03.11</li>
+                                                </ul>
+                                            </div>
+                                            <p class="media-comment">
+                                                댓글 내용 댓글 내용 와우 당신 글을 잘쓰는걸~?
+                                            </p>
+                                            <a class="btn btn-info btn-circle text-uppercase" href="#" id="reply"><span class="glyphicon glyphicon-share-alt"></span> 답장</a>
+                                            <a class="btn btn-warning btn-circle text-uppercase" data-toggle="collapse" href=""><span class="glyphicon glyphicon-comment"></span> 2 대댓글</a>
+                                        </div>
+
+                                        <div class="well well-lg">
+                                            <div class="flex">
+                                                <h4 class="media-heading text-uppercase reviews">댓글단 사람 아이디! </h4>
+                                                <ul class="media-date text-uppercase reviews list-inline">
+                                                    <li class="dd">2021.03.11</li>
+                                                </ul>
+                                            </div>
+                                            <p class="media-comment">
+                                                댓글 내용 댓글 내용 와우 당신 글을 잘쓰는걸~?
+                                            </p>
+                                            <a class="btn btn-info btn-circle text-uppercase" href="#" id="reply"><span class="glyphicon glyphicon-share-alt"></span> 답장</a>
+                                            <a class="btn btn-warning btn-circle text-uppercase" data-toggle="collapse" href=""><span class="glyphicon glyphicon-comment"></span> 2 대댓글</a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
 <form id="operForm" action="/Board/Index" method="GET">
     <input type="hidden" name="boardNo" value="@Model.BoardNo" />

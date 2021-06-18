@@ -9,7 +9,7 @@
 
 <form id="actionForm" action="/Board/Index" method="GET">
     <p>
-        <select name="category" style="height:29.5px;">
+        <select name="category" style="height:26px;">
             <option value="BoardTitle" @(pageMaker.cri.category == "BoardTitle" ? "selected" : "")>제목</option>
             <option value="BoardContent" @(pageMaker.cri.category == "BoardContent" ? "selected" : "")>내용</option>
             <option value="UserName" @(pageMaker.cri.category == "UserName" ? "selected" : "")>작성자</option>
@@ -52,7 +52,7 @@
 </table>
 
 <nav aria-label="...">
-    <ul class="pagination" style="justify-content:center;">
+    <ul class="pagination" style="justify-content:center; display:flex;">
         @if (pageMaker.prev)
         {
         <li class="page-item"><a class="page-link" href="@(pageMaker.startPage-1)">Previous</a></li>

@@ -5,17 +5,14 @@
     var cri = ViewData["cri"] as Criteria;
 }
 
-<h1>BoardController - Edit 페이지</h1>
-
 <div class="row">
-    <div class="col-lg-4"></div>
-    <div class="col-lg-4">
+    <div class="col-lg-10">
         <form id="operForm" class="form-horizontal" action="/Board/Edit" method="POST">
             <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 
             <div class="form-group">
                 <label>제목</label>
-                <input type="text" class="form-contorl" asp-for="BoardTitle" value="@Model.BoardTitle"/>
+                <input type="text" class="form-contorl" style="width:800px;"asp-for="BoardTitle" value="@Model.BoardTitle"/>
                 <span class="text-danger" asp-validation-for="BoardTitle"></span>
             </div>
 
@@ -35,5 +32,4 @@
             </div>
         </form>
     </div>
-    <div class="col-lg-4"></div>
 </div>

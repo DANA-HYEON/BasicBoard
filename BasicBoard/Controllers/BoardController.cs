@@ -8,6 +8,7 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BasicBoard.Controllers
@@ -45,6 +46,7 @@ namespace BasicBoard.Controllers
                 {
                     //검색키워드의 앞뒤 공백 제거
                     string searchString = cri.searchString.Trim();
+
                     switch (cri.category)
                     {
                         case "BoardTitle":
@@ -53,7 +55,7 @@ namespace BasicBoard.Controllers
                             break;
 
                         case "BoardContent":
-                            totalList = totalList.Where(s => s.BoardContent.Contains(searchString));
+                            totalList = totalList.Where(s => s.BoardContent.Contains(searchString)); //해당 키워드가 포함된 게시물 리스트
                             total = totalList.Count();
                             break;
 
@@ -73,6 +75,10 @@ namespace BasicBoard.Controllers
 
         }
 
+        private object remove_Tag(string boardContent)
+        {
+            throw new NotImplementedException();
+        }
 
         public IActionResult Detail(Criteria cri, int boardNo) //게시판 상세
         {
