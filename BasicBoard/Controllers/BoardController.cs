@@ -75,10 +75,6 @@ namespace BasicBoard.Controllers
 
         }
 
-        private object remove_Tag(string boardContent)
-        {
-            throw new NotImplementedException();
-        }
 
         public IActionResult Detail(Criteria cri, int boardNo) //게시판 상세
         {

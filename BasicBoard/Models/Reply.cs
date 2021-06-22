@@ -15,7 +15,7 @@ namespace BasicBoard.Models
         
 
         [Required] //대댓글 계층
-        public int ReplyLyaer { get; set; }
+        public int ReplyLayer { get; set; }
 
         [Required] //댓글그룹
         public int ReplyBundle { get; set; }
@@ -25,13 +25,15 @@ namespace BasicBoard.Models
         
         [Timestamp] //댓글작성일자
         public DateTime ReplyRegDt { get; set; }
-        
+
         [Timestamp] //댓글 수정일자
         public DateTime ReplyUptDt { get; set; }
         
         //댓글삭제일자
         public DateTime ReplyDelDt { get; set; }
 
+        public int BoardNo { get; set; } //게시물 번호
+        public int UserId { get; set; } //사용자 아이디
 
 
         [ForeignKey("BoardNo")] //외래키 게시물 번호

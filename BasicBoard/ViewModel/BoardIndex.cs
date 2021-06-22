@@ -19,5 +19,6 @@ namespace BasicBoard.ViewModel
 
         public string UserName { get; set; } //등록자
 
+
     }
 }

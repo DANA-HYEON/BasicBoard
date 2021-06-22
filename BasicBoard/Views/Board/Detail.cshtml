@@ -5,92 +5,64 @@
     var cri = ViewData["cri"] as Criteria;
 }
 
-    <div class="row">
-        <div class="col-lg-10">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h2>@Model.BoardTitle</h2>
-                </div>
-                <div class="panel-body">
-                    @*내용*@
-                    @Html.Raw(Model.BoardContent)
+<div class="row">
+    <div class="col-lg-10">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2>@Model.BoardTitle</h2>
+            </div>
+            <div class="panel-body">
+                @*내용*@
+                @Html.Raw(Model.BoardContent)
+            </div>
+        </div>
+        <div class="text-right">
+            @*@*panel-footer*@
+            @if (Context.Session.GetInt32("USER_LOGIN_KEY") == @Model.UserNo)
+            {
+                <button data-oper="Edit" class="btn btn-warning">게시물 수정하기</button>
+                <button data-oper="Delete" class="btn btn-danger">게시물 삭제하기</button>
+                <button data-oper="Index" class="btn btn-primary">목록으로 돌아가기</button>
+            }
+            else
+            {
+                <button data-oper="Index" class="btn btn-primary">목록으로 돌아가기</button>
+            }
+        </div>
+
+        <div>
+            <div class="page-header">
+                <h3 class="reviews">Leave your comment</h3>
+            </div>
+
+
+            @*댓글 달기*@
+        <div class="tab-pane" id="add-comment" style="margin-bottom:30px; height:120px;">
+            <div class="form-group">
+                <label for="email" class="col-sm-2 control-label">Comment</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control" name="replyContent" id="addComment" rows="3" placeholder="게시글과 관련없는 글, 비방, 홍보, 도배 등의 글을 작성할 경우 이용약관에 의해 제재를 받을 수 있습니다."></textarea>
                 </div>
             </div>
-            <div class="text-right">
-                @*@*panel-footer*@
-                @if (Context.Session.GetInt32("USER_LOGIN_KEY") == @Model.UserNo)
-                {
-                    <button data-oper="Edit" class="btn btn-warning">게시물 수정하기</button>
-                    <button data-oper="Delete" class="btn btn-danger">게시물 삭제하기</button>
-                    <button data-oper="Index" class="btn btn-primary">목록으로 돌아가기</button>
-                }
-                else
-                {
-                    <button data-oper="Index" class="btn btn-primary">목록으로 돌아가기</button>
-                }
-            </div>
-
-            <div>
-                <div class="page-header">
-                    <h3 class="reviews">Leave your comment</h3>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10" style="margin-top:12px;">
+                    <button class="btn btn-success btn-circle text-uppercase" type="submit" id="submitComment"><span class="glyphicon glyphicon-send"></span> 댓글 달기 </button>
                 </div>
+            </div>
+        </div>
 
-                <div class="comment-tabs">
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="comments-logout">
-                            <ul class="media-list">
-                                <li class="media">
-                                    <div class="media-body">
-                                        <div class="well well-lg">
-                                            <div class="flex">
-                                                <h4 class="media-heading text-uppercase reviews">댓글단 사람 아이디! </h4>
-                                                <ul class="media-date text-uppercase reviews list-inline">
-                                                    <li class="dd">2021.03.11</li>
-                                                </ul>
-                                            </div>
-                                            <p class="media-comment">
-                                                댓글 내용 댓글 내용 와우 당신 글을 잘쓰는걸~?
-                                            </p>
-                                            <a class="btn btn-info btn-circle text-uppercase" href="#" id="reply"><span class="glyphicon glyphicon-share-alt"></span> 답장</a>
-                                            <a class="btn btn-warning btn-circle text-uppercase" data-toggle="collapse" href=""><span class="glyphicon glyphicon-comment"></span> 2 대댓글</a>
-                                        </div>
-
-                                        <div class="well well-lg">
-                                            <div class="flex">
-                                                <h4 class="media-heading text-uppercase reviews">댓글단 사람 아이디! </h4>
-                                                <ul class="media-date text-uppercase reviews list-inline">
-                                                    <li class="dd">2021.03.11</li>
-                                                </ul>
-                                            </div>
-                                            <p class="media-comment">
-                                                댓글 내용 댓글 내용 와우 당신 글을 잘쓰는걸~?
-                                            </p>
-                                            <a class="btn btn-info btn-circle text-uppercase" href="#" id="reply"><span class="glyphicon glyphicon-share-alt"></span> 답장</a>
-                                            <a class="btn btn-warning btn-circle text-uppercase" data-toggle="collapse" href=""><span class="glyphicon glyphicon-comment"></span> 2 대댓글</a>
-                                        </div>
-
-                                        <div class="well well-lg">
-                                            <div class="flex">
-                                                <h4 class="media-heading text-uppercase reviews">댓글단 사람 아이디! </h4>
-                                                <ul class="media-date text-uppercase reviews list-inline">
-                                                    <li class="dd">2021.03.11</li>
-                                                </ul>
-                                            </div>
-                                            <p class="media-comment">
-                                                댓글 내용 댓글 내용 와우 당신 글을 잘쓰는걸~?
-                                            </p>
-                                            <a class="btn btn-info btn-circle text-uppercase" href="#" id="reply"><span class="glyphicon glyphicon-share-alt"></span> 답장</a>
-                                            <a class="btn btn-warning btn-circle text-uppercase" data-toggle="collapse" href=""><span class="glyphicon glyphicon-comment"></span> 2 대댓글</a>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+            <div class="comment-tabs">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="comments-logout">
+                        <ul class="media-list flex-column">
+                            @*댓글 list 보여지는 화면*@
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 <form id="operForm" action="/Board/Index" method="GET">
     <input type="hidden" name="boardNo" value="@Model.BoardNo" />
@@ -100,8 +72,213 @@
     <input type="hidden" name="searchString" value="@cri.searchString" />
 </form>
 
-<script>
 
+<script src="~/js/reply.js"></script>
+<script>
+    $(document).ready(function () {
+
+        var USER_LOGIN_KEY = @Context.Session.GetInt32("USER_LOGIN_KEY"); //세션에 저장된 사용자 아이디 가져오기
+        var BoardNo = @Model.BoardNo; //게시물 번호
+        var replyUL = $(".media-list"); //댓글 ul 선택자
+
+        showList();
+
+        function showList() {
+            replyService.getList({ bno: BoardNo }, function (list) {
+
+                var str = "";
+                if (list == null || list.length == 0) {
+                    replyUL.html("");
+                    return;
+                }
+
+                for (var i = 0, len = list.length || 0; i < len; i++) {
+                    str += '<li data-rno=' + list[i].replyNo + '>';
+                    str += '    <div>';
+                    str += '        <div class="well well-lg">';
+                    str += '            <div class="flex">';
+                    str += '                <h4 class="media-heading text-uppercase reviews">' + list[i].userName + '</h4>';
+                    str += '                <ul class="media-date text-uppercase reviews list-inline">';
+                    str += '            <li class="dd">' + replyService.displayTime(list[i].replyUptDt) + '</li>';
+                    str += '            </div>';
+                    str += '            <p class="media-comment" >' + list[i].replyContent + '</p>';
+                    str += '            <a class="btn btn-info btn-circle text-uppercase" href="#" id="reply"><span class="glyphicon glyphicon-share-alt"></span> 답장</a>';
+                    str += '            <a class="btn btn-warning btn-circle text-uppercase" data-toggle="collapse" href=""><span class="glyphicon glyphicon-comment"></span> 2 대댓글</a>';
+
+                    if (USER_LOGIN_KEY == list[i].userId)  //만약 댓글을 작성한 사람이라면
+                    {
+                        str += '            <div class="text-right">';
+                        str += '                <button id="modify" class="btn btn-warning">댓글 수정</button>';
+                        str += '                <button id="delete" class="btn btn-danger">댓글 삭제</button>';
+                        str += '            </div>';
+
+                    }
+
+                    str += '        </div>';
+                    str += '    </div>';
+                    str += '</li>';
+                }
+
+                replyUL.html(str);
+            }); //end function
+        }//end showList
+
+
+
+
+        var submitComment = $("#submitComment"); //댓글 달기 버튼
+
+        //댓글달기 버튼 클릭
+        submitComment.on("click", function (e) {
+
+            var ReplyContent = $("#addComment").val().trim();
+
+            if (ReplyContent == "") {
+                alert("댓글을 입력해주세요.");
+                return;
+            }
+
+            var reply = {
+                ReplyContent: ReplyContent,
+                ReplyLayer: 0,
+                ReplyBundel: 0,
+                ReplyBunOrder: 0,
+                BoardNo: BoardNo,
+                UserId: USER_LOGIN_KEY
+            };
+
+            replyService.add(reply, function (result) {
+                alert(result);
+
+                $("#addComment").val(""); //댓글 내용 없애기
+                showList(); //댓글 리스트 보여주기
+            });
+        });
+
+
+        //댓글수정
+        $(document).on("click", "#modify", function (e) {
+
+            var str = "";
+
+            str += '<div class="tab-pane" id="modify-comment" style="margin-bottom:30px; height:120px;">';
+            str += '    <div class="form-group">';
+            str += '        <label for="email" class="col-sm-2 control-label">댓글 수정</label>';
+            str += '        <div class="col-sm-10">';
+            str += '            <textarea class="form-control modifyContent" name="replyContent" id="addComment" rows="2" placeholder="게시글과 관련없는 글, 비방, 홍보, 도배 등의 글을 작성할 경우 이용약관에 의해 제재를 받을 수 있습니다."></textarea>';
+            str += '        </div>';
+            str += '    </div>';
+            str += '    <div class="form-group">';
+            str += '        <div class="col-sm-offset-2 col-sm-10" style="margin-top:10px;">';
+            str += '            <button class="btn btn-success btn-circle text-uppercase modifyBtn" type="submit" id="submitComment"><span class="glyphicon glyphicon-send"></span> 댓글 수정하기 </button>';
+            str += '        </div>';
+            str += '    </div>';
+            str += '</div>';
+
+
+            var replyLi = $(this).closest("li");
+
+            if ($("#modify-comment").length < 1) { //댓글 수정 입력화면이 없을때
+                $(this).html("수정 취소");
+                replyLi.append(str);
+
+            } else {
+                $(this).html("댓글 수정");
+                replyLi.children(".tab-pane").remove();
+            }
+
+
+            $(document).on("click", ".modifyBtn", function (e) {
+
+                //e.stopPropagation();
+
+                var modifyContent = $(".modifyContent").val().trim();
+                console.log(modifyContent);
+
+                if (modifyContent == "") {
+                    console.log("modifyContent : " + modifyContent);
+                    alert("수정할 댓글 내용을 입력해주세요.");
+                    return;
+                }
+
+
+                var reply = {
+                    replyNo: replyLi.data("rno"),
+                    replyContent: modifyContent
+                };
+
+                replyService.update(reply, function (result) {
+                    alert(result);
+                    replyLi.children(".tab-pane").remove();
+                    showList();
+                });
+            });
+        });
+    });
+</script>
+
+<script>
+@*    console.log("=================");
+    console.log("JS TEST");*@
+
+
+    //add
+    @*replyService.add
+        (
+            {
+                replyContent: "JS댓글 추가 테스트",
+                replyLayer: 0,
+                replyBundle: 0,
+                replyBunOrder: 0,
+                boardNo: 4,
+                userId: 3
+            },
+            function (result) {
+                alert("result " + result);
+            }
+        );*@
+
+    //getList
+@*    replyService.getList({ bno: 4 }, function (list) {
+        for (var i = 0, len = list.length || 0; i < len; i++)
+        {
+            console.log(list[i]);
+        }
+    });*@
+
+    //remove
+@*    replyService.remove(8, function (count) {
+        console.log(count);
+
+        if (count == "success") {
+            alert("Removed");
+        }
+    }, function (err) {
+        alert("Error...")
+    });*@
+
+    //update
+@*    replyService.update({
+        replyNo : 9,
+        replyContent: "ajax로 수정 되는지 테스트 중",
+        replyLayer: 0,
+        replyBundle: 0,
+        replyBunOrder: 0,
+        boardNo: 4,
+        userId : 3
+    }, function (result) {
+        alert("수정완료");
+    });*@
+
+    //get
+@*    replyService.get(10, function (data) {
+        console.log("get : " + data);
+    });*@
+
+</script>
+
+
+<script>
     var operForm = $("#operForm");
 
     $("button[data-oper='Edit'").on("click", function (e) {
