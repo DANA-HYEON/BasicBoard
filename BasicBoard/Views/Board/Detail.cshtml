@@ -140,9 +140,6 @@
 
             var reply = {
                 ReplyContent: ReplyContent,
-                ReplyLayer: 0,
-                ReplyBundel: 0,
-                ReplyBunOrder: 0,
                 BoardNo: BoardNo,
                 UserId: USER_LOGIN_KEY
             };
@@ -234,66 +231,6 @@
 
         });
     });
-</script>
-
-<script>
-@*    console.log("=================");
-    console.log("JS TEST");*@
-
-
-    //add
-    @*replyService.add
-        (
-            {
-                replyContent: "JS댓글 추가 테스트",
-                replyLayer: 0,
-                replyBundle: 0,
-                replyBunOrder: 0,
-                boardNo: 4,
-                userId: 3
-            },
-            function (result) {
-                alert("result " + result);
-            }
-        );*@
-
-    //getList
-@*    replyService.getList({ bno: 4 }, function (list) {
-        for (var i = 0, len = list.length || 0; i < len; i++)
-        {
-            console.log(list[i]);
-        }
-    });*@
-
-    //remove
-@*    replyService.remove(8, function (count) {
-        console.log(count);
-
-        if (count == "success") {
-            alert("Removed");
-        }
-    }, function (err) {
-        alert("Error...")
-    });*@
-
-    //update
-@*    replyService.update({
-        replyNo : 9,
-        replyContent: "ajax로 수정 되는지 테스트 중",
-        replyLayer: 0,
-        replyBundle: 0,
-        replyBunOrder: 0,
-        boardNo: 4,
-        userId : 3
-    }, function (result) {
-        alert("수정완료");
-    });*@
-
-    //get
-@*    replyService.get(10, function (data) {
-        console.log("get : " + data);
-    });*@
-
 </script>
 
 

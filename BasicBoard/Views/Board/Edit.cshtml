@@ -7,12 +7,12 @@
 
 <div class="row">
     <div class="col-lg-10">
-        <form id="operForm" class="form-horizontal" action="/Board/Edit" method="POST">
+        <form name="frm" action="/Board/Edit" method="POST">
             <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 
             <div class="form-group">
                 <label>제목</label>
-                <input type="text" class="form-contorl" style="width:800px;"asp-for="BoardTitle" value="@Model.BoardTitle"/>
+                <input type="text" class="form-contorl" style="width:800px;" asp-for="BoardTitle" value="@Model.BoardTitle" />
                 <span class="text-danger" asp-validation-for="BoardTitle"></span>
             </div>
 
@@ -27,9 +27,21 @@
                 <input type="hidden" name="amount" value="@cri.amount" />
                 <input type="hidden" name="category" value="@cri.category" />
                 <input type="hidden" name="searchString" value="@cri.searchString" />
+
                 <button type="submit" class="btn btn-primary" data-oper="Edit" asp-route-boardNo="@Model.BoardNo">수정완료</button>
-                <a class="btn btn-warning" asp-controller="Board" asp-action="Index">게시판으로 돌아가기</a>
+                <button data-oper="Index" class="btn btn-primary">목록으로 돌아가기</button>
             </div>
         </form>
     </div>
 </div>
+
+
+
+
+<script>
+    $("button[data-oper='Index'").on("click", function (e) {
+        e.preventDefault();
+        document.frm.action = "/Board/Index";
+        document.frm.submit();
+    });
+</script>

@@ -22,35 +22,43 @@
         <div class="text-right">
             @if (Context.Session.GetInt32("USER_LOGIN_KEY") == @Model.UserNo)
             {
-            <form name="frm" asp-controller="Board" asp-action="Delete" method="POST" onsubmit="return false">
-                <input type="hidden" asp-for="BoardNo" />
-                <input type="hidden" name="pageNum" value="@cri.pageNum" />
-                <input type="hidden" name="amount" value="@cri.amount" />
-                <input type="hidden" name="category" value="@cri.category" />
-                <input type="hidden" name="searchString" value="@cri.searchString" />
+                <input type="submit" class="btn btn-danger" value="게시물 삭제" />
+                <button data-oper="Index" class="btn btn-primary">목록으로 돌아가기</button>
 
-                <input type="submit" value="게시물 삭제" class="btn btn-danger" />
-                <a class="btn btn-primary" asp-controller="Board" asp-action="Index">목록으로 돌아가기</a>
-            </form>
-               
             }
             else
             {
-                <a class="btn btn-primary" asp-controller="Board" asp-action="Index">목록으로 돌아가기</a>
+                <button data-oper="Index" class="btn btn-primary">목록으로 돌아가기</button>
             }
+
         </div>
     </div>
 </div>
+
+        <form name="frm" asp-controller="Board" asp-action="Delete" method="POST">
+            <input type="hidden" name="boardNo" value="@Model.BoardNo" />
+            <input type="hidden" name="pageNum" value="@cri.pageNum" />
+            <input type="hidden" name="amount" value="@cri.amount" />
+            <input type="hidden" name="category" value="@cri.category" />
+            <input type="hidden" name="searchString" value="@cri.searchString" />
+        </form>
+
 
 
 <script>
 
     let deleteBtn = document.querySelector(".btn-danger");
     deleteBtn.onclick = function () {
-        let result = confirm("해당 게시물을 정말로 삭제하시겠습니까? 복구가 불가능합니다.");
+        let result = confirm("해당 게시물을 정말로 삭제하시겠습니까? 댓글과 게시물 모두 복구가 불가능합니다.");
 
         if (result) {
             document.frm.submit();
         }
     }
+
+    $("button[data-oper='Index'").on("click", function (e) {
+        e.preventDefault();
+        document.frm.action = "/Board/Index";
+        document.frm.submit();
+    });
 </script>

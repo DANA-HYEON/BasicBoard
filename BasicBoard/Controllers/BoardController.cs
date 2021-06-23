@@ -256,8 +256,17 @@ namespace BasicBoard.Controllers
 
             {
                 var board = db.Board.FirstOrDefault(b => b.BoardNo.Equals(boardNo)); //삭제하려는 게시물 정보 DB에서 가져오기
+                var replyList = db.Reply.Where(r => r.BoardNo.Equals(boardNo)).ToList(); //삭제하려는 게시물의 댓글 리스트
+
                 if (board != null)
                 {
+                    //댓글 삭제
+                    foreach(var r in replyList)
+                    {
+                        db.Remove(r);
+                    }
+
+                    //게시물 삭제
                     db.Remove(board);
                 }
 
@@ -266,6 +275,7 @@ namespace BasicBoard.Controllers
                 if (result > 0)
                 {
                     TempData["success"] = boardNo;
+                    ViewData["cri"] = cri;
                     return RedirectToAction("Index", cri);
                 }
             }

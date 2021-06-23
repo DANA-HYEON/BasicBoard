@@ -16,7 +16,7 @@ namespace BasicBoard.Controllers
         {
             using (var db = new BasicboardDbContext())
             {
-                //var reply = db.Reply.ToList().Where(r => r.BoardNo.Equals(bno));
+                
                 var reply = from r in db.Reply
                             join u in db.User on r.UserId equals u.UserNo
                             where r.BoardNo == bno 
