@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BasicBoard.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace BasicBoard.Models
 {
@@ -23,5 +24,17 @@ namespace BasicBoard.Models
         [DataType(DataType.PhoneNumber)]
         [Required(ErrorMessage = "사용자 전화번호를 입력하세요.")]
         public string UserPhone { get; set; } //사용자 전화번호
+
+
+        //비밀번호 암호화
+        public void ConvertPassword()
+        {
+            var sha = new System.Security.Cryptography.HMACSHA512();
+            sha.Key = System.Text.Encoding.UTF8.GetBytes(this.UserPassword.Length.ToString());
+
+            var hash = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(this.UserPassword));
+
+            this.UserPassword =  System.Convert.ToBase64String(hash);
+        }
     }
 }

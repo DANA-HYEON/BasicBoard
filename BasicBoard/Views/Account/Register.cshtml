@@ -1,12 +1,18 @@
 ﻿@model BasicBoard.Models.User
 @{
     ViewData["Title"] = "Register Page";
+    string msg = ViewData["msg"] as string;
 }
 
 <h1>회원가입</h1>
 
 <div class="container">
-    <form class="form-horizontal" asp-controller="Account" asp-action="Register" method="POST">
+    @if(!string.IsNullOrWhiteSpace(msg)) 
+    { 
+        <div class="alert alert-danger">@msg</div>
+    }
+
+        <form class="form-horizontal" asp-controller="Account" asp-action="Register" method="POST">
         <div class="form-group">
             <label>사용자 ID</label>
             <input type="text" class="form-control" asp-for="UserId" placeholder="사용자 ID를 입력해주세요." />
