@@ -81,7 +81,8 @@
         var BoardNo = @Model.BoardNo; //게시물 번호
         var replyUL = $(".media-list"); //댓글 ul 선택자
 
-        showList();
+
+        showList(); //댓글 리스트 보여주기
 
         function showList() {
             replyService.getList({ bno: BoardNo }, function (list) {
@@ -102,9 +103,9 @@
                     str += '            <li class="dd">' + replyService.displayTime(list[i].replyUptDt) + '</li>';
                     str += '            </div>';
                     str += '            <p class="media-comment" >' + list[i].replyContent + '</p>';
-                    str += '            <a class="btn btn-info btn-circle text-uppercase" href="#" id="reply"><span class="glyphicon glyphicon-share-alt"></span> 답장</a>';
-                    str += '            <a class="btn btn-warning btn-circle text-uppercase" data-toggle="collapse" href=""><span class="glyphicon glyphicon-comment"></span> 2 대댓글</a>';
-
+                    //str += '            <a class="btn btn-info btn-circle text-uppercase" href="#" id="reply"><span class="glyphicon glyphicon-share-alt"></span> 답장</a>';
+                    //str += '            <a class="btn btn-warning btn-circle text-uppercase" data-toggle="collapse" href=""><span class="glyphicon glyphicon-comment"></span> 2 대댓글</a>';
+                    
                     if (USER_LOGIN_KEY == list[i].userId)  //만약 댓글을 작성한 사람이라면
                     {
                         str += '            <div class="text-right">';
@@ -125,10 +126,9 @@
 
 
 
+        //댓글 등록
+        var submitComment = $("#submitComment");
 
-        var submitComment = $("#submitComment"); //댓글 달기 버튼
-
-        //댓글달기 버튼 클릭
         submitComment.on("click", function (e) {
 
             var ReplyContent = $("#addComment").val().trim();
@@ -156,7 +156,9 @@
         });
 
 
-        //댓글수정
+
+
+        //댓글수정 입력창 생성
         $(document).on("click", "#modify", function (e) {
 
             var str = "";
@@ -175,23 +177,20 @@
             str += '    </div>';
             str += '</div>';
 
-
             var replyLi = $(this).closest("li");
 
-            if ($("#modify-comment").length < 1) { //댓글 수정 입력화면이 없을때
+            if ($("#modify-comment").length < 1) {
                 $(this).html("수정 취소");
                 replyLi.append(str);
-
             } else {
                 $(this).html("댓글 수정");
-                replyLi.children(".tab-pane").remove();
+                replyLi.children(".tab-pane").remove(); 
             }
 
 
-            $(document).on("click", ".modifyBtn", function (e) {
 
-                //e.stopPropagation();
-
+            //댓글 수정
+            $(".modifyBtn").off().on("click", function (e) {  //off() 함수는 .on() 함수에 의해 바인딩 된 이벤트 핸들러를 제거
                 var modifyContent = $(".modifyContent").val().trim();
                 console.log(modifyContent);
 
@@ -199,8 +198,7 @@
                     console.log("modifyContent : " + modifyContent);
                     alert("수정할 댓글 내용을 입력해주세요.");
                     return;
-                }
-
+                };
 
                 var reply = {
                     replyNo: replyLi.data("rno"),
@@ -213,6 +211,27 @@
                     showList();
                 });
             });
+        });
+
+
+
+
+        //댓글 삭제
+        $(document).on("click", "#delete", function () {
+
+            var replyLi = $(this).closest("li");
+
+            replyService.remove(replyLi.data("rno"), function (count) {
+                console.log("count : " + count);
+
+                if (count == "success") {
+                    alert("삭제되었습니다.");
+                    showList();
+                }
+            }, function (err) {
+                alert("Error...")
+            });
+
         });
     });
 </script>
