@@ -26,27 +26,12 @@ namespace BasicBoard
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //DI
-            //Identity
+
             //Session - 서비스에 등록
             services.AddSession();
+
             //Web API 미들웨어
             services.AddControllersWithViews();
-
-            //쿠키 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            }).AddCookie(options =>
-            {
-                options.LoginPath = "/account/login";
-                options.EventsType = typeof(CustomCookieAuthenticationEvents);
-            });
-
-            //작업이 있을 때 마다 해당 클래스를 호출한다
-            services.AddScoped<CustomCookieAuthenticationEvents>();
 
             var serverVersion = new MySqlServerVersion(new Version(8, 0, 21));
 
@@ -83,7 +68,6 @@ namespace BasicBoard
 
             app.UseRouting();
 
-            app.UseAuthentication();
             app.UseAuthorization();
 
             //이 Application 에서 사용하겠다 선언

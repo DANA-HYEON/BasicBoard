@@ -15,10 +15,12 @@ namespace BasicBoard.Controllers
 {
     public class BoardController : Controller
     {
+             
         public IActionResult Index(Criteria cri) //게시판 리스트
         {
+            var USER_LOGIN_KEY = HttpContext.Session.GetInt32("USER_LOGIN_KEY"); //세선에 저장된 userNo 불러오기
 
-            if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
+            if (USER_LOGIN_KEY == null)
             {
                 //로그인이 안된 상태
                 return RedirectToAction("Login", "Account");
@@ -252,33 +254,46 @@ namespace BasicBoard.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            using (var db = new BasicboardDbContext())
-
+            try
             {
-                var board = db.Board.FirstOrDefault(b => b.BoardNo.Equals(boardNo)); //삭제하려는 게시물 정보 DB에서 가져오기
-                var replyList = db.Reply.Where(r => r.BoardNo.Equals(boardNo)).ToList(); //삭제하려는 게시물의 댓글 리스트
-
-                if (board != null)
+                using (var db = new BasicboardDbContext())
                 {
-                    //댓글 삭제
-                    foreach(var r in replyList)
+                    var transaction = db.Database.BeginTransaction();
+
+                    var board = db.Board.FirstOrDefault(b => b.BoardNo.Equals(boardNo)); //삭제하려는 게시물 정보 DB에서 가져오기
+                    var replyList = db.Reply.Where(r => r.BoardNo.Equals(boardNo)).ToList(); //삭제하려는 게시물의 댓글 리스트
+
+                    if (board != null)
                     {
-                        db.Remove(r);
+                        //댓글 삭제
+                        foreach(var r in replyList)
+                        {
+                            db.Remove(r);
+                        }
+
+                        //게시물 삭제
+                        db.Remove(board);
                     }
 
-                    //게시물 삭제
-                    db.Remove(board);
+                    var result = db.SaveChanges();
+
+                    if (result > 0)
+                    {
+                        transaction.Commit(); //트랜잭션
+
+                        TempData["success"] = boardNo;
+                        ViewData["cri"] = cri;
+                        return RedirectToAction("Index", cri);
+                    }
                 }
 
-                var result = db.SaveChanges();
-
-                if (result > 0)
-                {
-                    TempData["success"] = boardNo;
-                    ViewData["cri"] = cri;
-                    return RedirectToAction("Index", cri);
-                }
             }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                return Redirect($"/Home/Error?msg={e.Message}");
+            }
+            
             return View();
         }
 

@@ -1,4 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using BasicBoard.Data;
+@{ 
+    string userName = Context.Session.GetString("USER_LOGIN_NAME");
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -31,8 +35,7 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        @*@if (Context.Session.GetInt32("USER_LOGIN_KEY") == null)*@
-                        @if (!User.Identity.IsAuthenticated)
+                        @if (Context.Session.GetInt32("USER_LOGIN_KEY") == null)
                         {
 
                             <li><a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">로그인</a></li>
@@ -41,7 +44,7 @@
                         else
                         {
                             
-                            <li><a class="nav-link text-dark" > 안녕하세요,  @User.Identity.Name 회원님</a></li>
+                            <li><a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="MyPage"> 안녕하세요, <strong>@userName</strong> 회원님</a></li>
                             <li><a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">로그아웃</a></li>
 
                         }

@@ -1,0 +1,27 @@
+﻿@model BasicBoard.ViewModel.LoginViewModel
+@{
+    ViewData["Title"] = "My Page";
+    var user = ViewData["user"] as User;
+}
+
+<h1>내 정보</h1>
+
+<div class="mb-3">
+    <label for="formGroupExampleInput2" class="form-label">사용자 아이디</label>
+    <input type="text" class="form-control" id="formGroupExampleInput2" value="@user.UserId" readonly>
+</div>
+
+<div class="mb-3">
+    <label for="formGroupExampleInput2" class="form-label">사용자 이름</label>
+    <input type="text" class="form-control" id="formGroupExampleInput2" value="@user.UserName" readonly>
+</div>
+
+<div class="mb-3">
+    <label for="formGroupExampleInput2" class="form-label">사용자 이메일</label>
+    <input type="text" class="form-control" id="formGroupExampleInput2" value="@user.UserEmail" readonly>
+</div>
+
+<div class="mb-3">
+    <label for="formGroupExampleInput2" class="form-label">사용자 연락처</label>
+    <input type="text" class="form-control" id="formGroupExampleInput2" value="@user.UserPhone" readonly>
+</div>
