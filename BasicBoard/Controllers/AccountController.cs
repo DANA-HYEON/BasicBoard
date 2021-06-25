@@ -4,9 +4,11 @@ using BasicBoard.ViewModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -16,6 +18,15 @@ namespace BasicBoard.Controllers
 {
     public class AccountController : Controller
     {
+
+        public IEmailSender EmailSender { get; set; }
+
+        public AccountController(IEmailSender emailSender)
+        {
+            EmailSender = emailSender;
+        }
+
+
 
         [HttpGet]
         public IActionResult Login(string msg) //로그인
@@ -33,23 +44,23 @@ namespace BasicBoard.Controllers
                 //ID,비밀번호 - 필수
                 if (ModelState.IsValid)
                 {
-                    using(var db = new BasicboardDbContext())
+                    using (var db = new BasicboardDbContext())
                     {
                         //비밀번호 암호화
                         model.UserPassword = ConvertPassword(model.UserPassword);
-                        
+
                         //단순 메모리 위치상의 비교, 데이터 값도 비교한다. 메모리 누수를 방지 ==로 표시하면 새로운 string객체로 비교하기 때문에 메모리 누수 발생
                         var user = db.User.FirstOrDefault(u => u.UserId.Equals(model.UserId) && u.UserPassword.Equals(model.UserPassword));
 
-                        if(user != null)
+                        if (user != null)
                         {
                             //로그인에 성공했을 때
                             HttpContext.Session.SetInt32("USER_LOGIN_KEY", user.UserNo);
                             HttpContext.Session.SetString("USER_LOGIN_NAME", user.UserName);
-
+                             
                             return RedirectToAction("Index", "Home"); //로그인 성공 페이지로 이동
                         }
-                 
+
                         //로그인에 실패했을 때
                         ModelState.AddModelError(string.Empty, "사용자 ID 혹은 비밀번호가 올바르지 않습니다.");
                     }
@@ -58,9 +69,9 @@ namespace BasicBoard.Controllers
 
                 //로그인 필수 입력값이 없을 때 
                 return View(model);
-                               
+
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.StackTrace);
                 return Redirect($"/account/login?msg=로그인 시도 중 오류가 발생하였습니다. 다시 시도해 주십시오.");
@@ -80,11 +91,11 @@ namespace BasicBoard.Controllers
 
             try
             {
-                using(var db = new BasicboardDbContext())
+                using (var db = new BasicboardDbContext())
                 {
                     var user = db.User.FirstOrDefault(u => u.UserNo.Equals(USER_LOGIN_KEY));
 
-                    if(user != null)
+                    if (user != null)
                     {
                         ViewData["user"] = user;
                         return View();
@@ -92,7 +103,7 @@ namespace BasicBoard.Controllers
                 }
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.StackTrace);
                 return Redirect($"/Home/Error?msg={e.Message}");
@@ -105,6 +116,7 @@ namespace BasicBoard.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Remove("USER_LOGIN_KEY");
+            HttpContext.Session.Remove("USER_LOGIN_NAME");
             return RedirectToAction("Index", "Home");
         }
 
@@ -122,14 +134,15 @@ namespace BasicBoard.Controllers
         {
             try
             {
-                //중복된 값이 있는지 유효성 검사 로직 추가(이메일, 아이디 등..)
-
-                if (ModelState.IsValid) //필수 입력사항이 입력 받았는지 체크(Required어노테이션으로 체크)
+                if (ModelState.IsValid)
                 {
+                    //userName 공백값 제거
+                    model.UserName = model.UserName.Trim();
+
                     //비밀번호 암호화
                     model.UserPassword = ConvertPassword(model.UserPassword);
 
-                    using(var db = new BasicboardDbContext())
+                    using (var db = new BasicboardDbContext())
                     {
                         db.User.Add(model); //메모리에 올리기(실제 DB에는 저장안됨)
                         db.SaveChanges(); //실제 SQL로 저장
@@ -139,7 +152,7 @@ namespace BasicBoard.Controllers
                 return View(model);
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Redirect($"/account/register?msg={e.Message}");
 
@@ -147,6 +160,31 @@ namespace BasicBoard.Controllers
 
         }
 
+
+        [HttpGet]
+        public IActionResult FindPassword()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> FIndPassword(string userEmail)
+        {
+            const string strPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //문자 생성 풀
+            char[] charRandom = new char[6];
+
+            for (int i = 0; i < 6; i++)
+            {
+
+            }
+
+
+            var subject = "BasicBoard 인증번호";
+            var body = "인증번호입니다!";
+            await EmailSender.SendEmailAsync(userEmail, subject, body);
+            return RedirectToAction("FindPassword", "Account");
+        }
 
         //비밀번호 암호화
         public string ConvertPassword(string userPassword)
@@ -156,8 +194,93 @@ namespace BasicBoard.Controllers
 
             var hash = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(userPassword));
 
-            return userPassword = System.Convert.ToBase64String(hash);
+            return userPassword = System.Convert.ToBase64String(hash); //33%정도 길어진다https://docs.microsoft.com/ko-kr/dotnet/api/system.convert.tobase64string?view=net-5.0
         }
 
+
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult VerifyId(string userId)
+        {
+            try
+            {
+                using (var db = new BasicboardDbContext())
+                {
+                    var userInfo = db.User.FirstOrDefault(u => u.UserId.Equals(userId));
+
+                    if (userInfo != null)
+                    {
+                        return Json("해당 아이디는 이미 존재하는 아이디입니다.");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                return Redirect($"/Account/Register?msg={e.Message}");
+            }
+
+            return Json(true);
+        }
+
+
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult VerifyPhone([RegularExpression(@"^\d{3}-\d{4}-\d{4}$")] string userPhone)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Json("전화번호 형식이 올바르지 않습니다. 예시 : ###-####-####");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                return Redirect($"/Account/Register?msg={e.Message}");
+            }
+
+            return Json(true);
+        }
+
+
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult VerifyEmail([RegularExpression(@"^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$")] string userEmail)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Json("이메일 형식이 올바르지 않습니다. 예시 : right@right.com");
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                return Redirect($"/Account/Error?msg={e.Message}");
+            }
+
+            return Json(true);
+        }
+
+
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult VerifyPassword([RegularExpression(@"^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$")] string userPassword)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Json("문자/숫자/특수문자를 포함한 형태의 8~15자리 이내의 암호여야 합니다.");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                return Redirect($"/Account/Error?msg={e.Message}");
+            }
+
+            return Json(true);
+        }
     }
 }

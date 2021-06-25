@@ -1,8 +1,10 @@
 using BasicBoard.Data;
+using BasicBoard.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,8 +28,18 @@ namespace BasicBoard
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IEmailSender, MailKitEmailSender>();
+            services.Configure<MailKitEmailSenderOptions>(options =>
+            {
+                options.Host_Address = "smtp.naver.com";
+                options.Host_Port = 587;
+                options.Host_UserName = "dada4202";
+                options.Host_Password = "dlekgus";
+                options.Sender_Email = "dada4202@naver.com";
+                options.Sender_Name = "basiccboard";
+            });
 
-            //Session - 서비스에 등록
+            //Session - 서비스에 등록s
             services.AddSession();
 
             //Web API 미들웨어
