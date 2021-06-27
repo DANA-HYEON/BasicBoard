@@ -169,22 +169,93 @@ namespace BasicBoard.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> FIndPassword(string userEmail)
+        public async Task<IActionResult> FIndPassword(string userEmail, string verifyCode)
         {
-            const string strPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //문자 생성 풀
-            char[] charRandom = new char[6];
-
-            for (int i = 0; i < 6; i++)
+            if(userEmail != null) //이메일을 입력 받으면
             {
+                using(var db = new BasicboardDbContext())
+                {
+                    var user = db.User.FirstOrDefault(u => u.UserEmail.Equals(userEmail));
 
+                    if(user != null) //해당 이메일정보가 가입정보에 있으면
+                    {
+                        Random random = new Random();
+                        const string strPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //문자 생성 풀
+                        char[] charRandom = new char[6];
+
+                        for (int i = 0; i < 6; i++)
+                        {
+                            //인증번호 생성 var number = 123;
+                            charRandom[i] = strPool[random.Next(strPool.Length)];
+                        }
+
+                        string strRet = new string(charRandom); //char to string
+
+                        var subject = "BasicBoard 인증번호";
+                        string body = strRet;
+                        await EmailSender.SendEmailAsync(userEmail, subject, body); //인증번호 이메일로 전송
+
+                        TempData["userEmail"] = userEmail;
+                        ViewData["verifyCode"] = body;
+                        return View();
+                    }
+                }
             }
 
+            if(verifyCode != null) //인증번호를 입력받으면
+            {
+                return RedirectToAction("ChangePassword", "Account");
+            }
 
-            var subject = "BasicBoard 인증번호";
-            var body = "인증번호입니다!";
-            await EmailSender.SendEmailAsync(userEmail, subject, body);
-            return RedirectToAction("FindPassword", "Account");
+            ViewData["fail"] = "fail";
+            return View(); //이메일이 가입정보에 없으면
         }
+
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ChangePassword(string userPassword, string confirmedPassword)
+        {
+            if(userPassword != confirmedPassword)
+            {
+                return View();
+            }
+
+            try
+            {
+                using(var db = new BasicboardDbContext())
+                {
+                    var userEmail = TempData["userEmail"];
+                    var user = db.User.FirstOrDefault(u => u.UserEmail.Equals(userEmail));
+
+                    if(user != null)
+                    {
+                        user.UserPassword = ConvertPassword(confirmedPassword);
+                        db.Update(user);
+
+                        var result = db.SaveChanges();
+
+                        if(result > 0)
+                        {
+                            TempData["changedPwd"] = user.UserEmail;
+                            return RedirectToAction("Index", "Home");
+                        }
+                        
+                    }
+                    return View();
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                return Redirect($"/Home/Error?msg={e.Message}");
+            }
+        }
+
 
         //비밀번호 암호화
         public string ConvertPassword(string userPassword)

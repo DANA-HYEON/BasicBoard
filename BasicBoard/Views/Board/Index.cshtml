@@ -76,7 +76,7 @@
     let actionForm = $("#actionForm");
 
     //게시물 crud 성공 시 alert
-    var DeletedResult ='@Html.Raw(TempData["success"])';
+    var DeletedResult ='@Html.Raw(TempData["success"])'; //html코드를 인코딩하지 않은 원본 상태로 출력
 
     if (DeletedResult != "")
     {

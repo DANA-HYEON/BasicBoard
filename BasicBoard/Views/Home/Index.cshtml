@@ -6,3 +6,12 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+<script>
+    var changedPwd = '@TempData["changedPwd"]';
+
+    if (changedPwd != "")
+    {
+        alert(changedPwd + "님의 비밀번호가 정상적으로 변경되었습니다.");
+    }
+</script>
