@@ -4,5 +4,18 @@
 // Write your JavaScript code.
 
 $(".editor").trumbowyg({
-    lang: 'ko'
+    lang: 'ko',
+    btns: [
+        ['undo', 'redo'], // Only supported in Blink browsers
+        ['formatting'],
+        ['strong', 'em', 'del'],
+        ['superscript', 'subscript'],
+        ['link'],
+        ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+        ['unorderedList', 'orderedList'],
+        ['horizontalRule'],
+        ['removeformat'],
+        ['fullscreen']
+    ]
+
 });
