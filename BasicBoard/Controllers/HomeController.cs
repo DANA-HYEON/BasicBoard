@@ -4,10 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BasicBoard.Controllers
 {
@@ -20,19 +18,20 @@ namespace BasicBoard.Controllers
             _logger = logger;
         }
 
+
         public IActionResult Index()
         {
+            var USER_LOGIN_KEY = HttpContext.Session.GetInt32("USER_LOGIN_KEY"); //세선에 저장된 userNo 불러오기
+            
             try
             {
-                var USER_LOGIN_KEY = HttpContext.Session.GetInt32("USER_LOGIN_KEY"); //세선에 저장된 userNo 불러오기
-
                 using(var db = new BasicboardDbContext())
                 {
                     var user = db.User.FirstOrDefault(u => u.UserNo.Equals(USER_LOGIN_KEY)); //현재 로그인 된 유저 정보 가져오기
 
                     if(user != null)
                     {
-                        //로그인 되어 있으면
+                        //로그인 되어 있으면 user정보 전달
                         ViewData["user"] = user;
                         return View();
                     }

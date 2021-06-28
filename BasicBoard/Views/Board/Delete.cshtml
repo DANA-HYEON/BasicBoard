@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="text-right">
-            @if (Context.Session.GetInt32("USER_LOGIN_KEY") == @Model.UserNo)
+            @if (Context.Session.GetInt32("USER_LOGIN_KEY") == @Model.UserNo) //작성자와 로그인한 유저가 동일하면
             {
                 <input type="submit" class="btn btn-danger" value="게시물 삭제" />
                 <button data-oper="Index" class="btn btn-primary">목록으로 돌아가기</button>
@@ -30,24 +30,24 @@
             {
                 <button data-oper="Index" class="btn btn-primary">목록으로 돌아가기</button>
             }
-
         </div>
     </div>
 </div>
 
-        <form name="frm" asp-controller="Board" asp-action="Delete" method="POST">
-            <input type="hidden" name="boardNo" value="@Model.BoardNo" />
-            <input type="hidden" name="pageNum" value="@cri.pageNum" />
-            <input type="hidden" name="amount" value="@cri.amount" />
-            <input type="hidden" name="category" value="@cri.category" />
-            <input type="hidden" name="searchString" value="@cri.searchString" />
-        </form>
+<form name="frm" asp-controller="Board" asp-action="Delete" method="POST">
+    <input type="hidden" name="boardNo" value="@Model.BoardNo" />
+    <input type="hidden" name="pageNum" value="@cri.pageNum" />
+    <input type="hidden" name="amount" value="@cri.amount" />
+    <input type="hidden" name="category" value="@cri.category" />
+    <input type="hidden" name="searchString" value="@cri.searchString" />
+</form>
 
 
 
 <script>
-
     let deleteBtn = document.querySelector(".btn-danger");
+
+    //삭제버튼을 클릭하면
     deleteBtn.onclick = function () {
         let result = confirm("해당 게시물을 정말로 삭제하시겠습니까? 댓글과 게시물 모두 복구가 불가능합니다.");
 
@@ -56,6 +56,7 @@
         }
     }
 
+    //목록으로 돌아가기 버튼을 클릭하면 action 값을 index로 변경 후 전송
     $("button[data-oper='Index'").on("click", function (e) {
         e.preventDefault();
         document.frm.action = "/Board/Index";

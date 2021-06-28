@@ -9,7 +9,7 @@ namespace BasicBoard.Models
 {
     public class FindPassword
     {
-        [Remote("VerifyEmail", "Account")]
+        [RegularExpression(@"^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$", ErrorMessage = "이메일 형식이 올바르지 않습니다. 예시 : right@right.com")]
         [Required(ErrorMessage ="이메일을 입력해주세요.")]
         public string UserEmail { get; set; } //인증번호 받을 이메일
 

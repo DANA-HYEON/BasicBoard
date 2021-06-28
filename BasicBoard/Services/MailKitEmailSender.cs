@@ -27,6 +27,7 @@ namespace BasicBoard.Services
             //메시지 생성
             var email = new MimeMessage();
             email.Sender = MailboxAddress.Parse(Options.Sender_Email);
+
             if (!string.IsNullOrEmpty(Options.Sender_Name))
             {
                 email.Sender.Name = Options.Sender_Name;

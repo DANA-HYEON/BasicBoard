@@ -8,8 +8,8 @@ var replyService = (function () {
         $.ajax({
             type: "POST",
             url: "/reply/new",
-            data : JSON.stringify(reply),
-            contentType : "application/json; charset=utf-8", 
+            data: JSON.stringify(reply),
+            contentType: "application/json; charset=utf-8",
             success: function (result, status, xhr) {
                 if (callback) {
                     callback(result)
@@ -96,7 +96,7 @@ var replyService = (function () {
         var dateObj = new Date(timeStamp);
         var str = "";
 
-        if (gap < (1000 * 60 * 60 * 24)) { //댓글 작성 날짜가 24시간이 안지나면 시간으로 표시
+        if (gap < (1000 * 60 * 60 * 24)) { //댓글을 작성한 날로부터 24시간이 안지나면 시간으로 표시
             var hh = dateObj.getHours();
             var mi = dateObj.getMinutes();
             var ss = dateObj.getSeconds();
