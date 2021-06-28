@@ -28,7 +28,10 @@ namespace BasicBoard
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //검색 필요
             services.AddTransient<IEmailSender, MailKitEmailSender>();
+
+            //email
             services.Configure<MailKitEmailSenderOptions>(options =>
             {
                 options.Host_Address = "smtp.naver.com";

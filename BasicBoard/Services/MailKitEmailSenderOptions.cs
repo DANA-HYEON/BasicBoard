@@ -21,7 +21,7 @@ namespace BasicBoard.Services
 
         public string Host_Password { get; set; }
 
-        public SecureSocketOptions Host_SecureSocketOptions { get; set; }
+        public SecureSocketOptions Host_SecureSocketOptions { get; set; } //연결에 사용해야하는 SSL 또는 TLS 암호화를 지정하는 방법을 제공
 
         public string Sender_Email { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using BasicBoard.Data;
 using BasicBoard.Models;
+using BasicBoard.Services;
 using BasicBoard.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -20,7 +21,6 @@ namespace BasicBoard.Controllers
         {
             EmailSender = emailSender;
         }
-
 
 
         [HttpGet]

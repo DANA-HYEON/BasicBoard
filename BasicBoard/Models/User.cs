@@ -6,7 +6,6 @@ namespace BasicBoard.Models
 {
     public class User
     {
-
         [Key] //PK설정
         public int UserNo { get;set; } //사용자 번호
 
