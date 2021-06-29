@@ -2,6 +2,7 @@
 
 var replyService = (function () {
 
+    //댓글 추가
     function add(reply, callback, error) {
         console.log("add reply....");
 
@@ -23,6 +24,7 @@ var replyService = (function () {
         });
     }
 
+    //댓글리스트
     function getList(param, callback, error) {
         var bno = param.bno;
 
@@ -38,6 +40,7 @@ var replyService = (function () {
             });
     }
 
+    //댓글삭제
     function remove(rno, callback, error) {
         $.ajax({
             type: "DELETE",
@@ -55,6 +58,7 @@ var replyService = (function () {
         });
     }
 
+    //댓글수정
     function update(reply, callback, error) {
         console.log("rno : " + reply.replyNo);
 
@@ -76,18 +80,8 @@ var replyService = (function () {
         });
     }
 
-    function get(rno, callback, error) {
-        $.get("/reply/" + rno, function (result) {
-            if (callback) {
-                callback(result);
-            }
-        }).fail(function (xhr, status, err) {
-            if (error) {
-                error();
-            }
-        });
-    }
 
+    //댓글 등록 날짜 표현 함수
     function displayTime(timeValue) {
         var today = new Date();
         var timeStamp = new Date(timeValue); //DB의 timeStamp 형식을 Date로 변환

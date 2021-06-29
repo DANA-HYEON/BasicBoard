@@ -1,6 +1,7 @@
 ﻿using BasicBoard.Data;
 using BasicBoard.Models;
 using BasicBoard.ViewModel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -45,34 +46,40 @@ namespace BasicBoard.Controllers
         }
 
 
+
         //댓글 추가
         [HttpPost, Route("new")]
         public IActionResult Add([FromBody] Reply model)
         {
-            try
-            {
-                //필수 입력값이 모두 있다면
-                if (ModelState.IsValid)
-                {
-                    using (var db = new BasicboardDbContext())
-                    {
-                        db.Add(model); //댓글 insert
-                        int result = db.SaveChanges(); //commit
+            var USER_LOGIN_KEY = HttpContext.Session.GetInt32("USER_LOGIN_KEY"); //세선에 저장된 userNo 불러오기
 
-                        if (result > 0) //성공적으로 insert 된다면
+            if (USER_LOGIN_KEY == model.UserId) //로그인 정보가 있으면
+            {
+                try
+                {
+                    //필수 입력값이 모두 있다면
+                    if (ModelState.IsValid)
+                    {
+                        using (var db = new BasicboardDbContext())
                         {
-                            return Ok("success"); //200
+                            db.Add(model); //댓글 insert
+                            int result = db.SaveChanges(); //commit
+
+                            if (result > 0) //성공적으로 insert 된다면
+                            {
+                                return Ok("success"); //200
+                            }
                         }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.StackTrace);
-                return Redirect($"/Home/Error?msg={e.Message}");
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.StackTrace);
+                    return Redirect($"/Home/Error?msg={e.Message}");
+                }
             }
 
-            //insert 실패시
+            //insert 실패시 (로그인 정보가 없을 때)
             return Content("댓글 등록을 실패하였습니다."); //200
         }
 
@@ -82,6 +89,8 @@ namespace BasicBoard.Controllers
         [HttpPut, Route("{rno:int}")]
         public IActionResult Modify(int rno, [FromBody] Reply model)
         {
+            var USER_LOGIN_KEY = HttpContext.Session.GetInt32("USER_LOGIN_KEY"); //세선에 저장된 userNo 불러오기
+
             try
             {
                 //필수 입력값이 모두 있다면
@@ -91,19 +100,23 @@ namespace BasicBoard.Controllers
                     {
                         var reply = db.Reply.FirstOrDefault(r => r.ReplyNo.Equals(rno)); //수정하려는 댓글 정보 가져오기
 
-                        //댓글 정보가 있다면
-                        if (reply != null)
+                        //가져온 유저 아이디와 댓글 등록한 유저 아이디가 같은지 비교
+                        if (USER_LOGIN_KEY == reply.UserId)
                         {
-                            //댓글 내용 수정
-                            reply.ReplyContent = model.ReplyContent;
-
-                            db.Update(reply); //update
-                            var result = db.SaveChanges(); //commit
-
-                            //성공적으로 업데이트되었다면
-                            if (result > 0)
+                            //댓글 정보가 있다면
+                            if (reply != null)
                             {
-                                return Ok("success"); //200
+                                //댓글 내용 수정
+                                reply.ReplyContent = model.ReplyContent;
+
+                                db.Update(reply); //update
+                                var result = db.SaveChanges(); //commit
+
+                                //성공적으로 업데이트되었다면
+                                if (result > 0)
+                                {
+                                    return Ok("success"); //200
+                                }
                             }
 
                             //댓글 업데이트 실패 시
@@ -127,27 +140,34 @@ namespace BasicBoard.Controllers
         [HttpDelete, Route("{rno:int}")]
         public IActionResult Delete(int rno)
         {
+            var USER_LOGIN_KEY = HttpContext.Session.GetInt32("USER_LOGIN_KEY"); //세선에 저장된 userNo 불러오기
+
             try
             {
                 using (var db = new BasicboardDbContext())
                 {
                     var reply = db.Reply.FirstOrDefault(r => r.ReplyNo.Equals(rno)); //댓글 정보 가져오기
 
-                    //댓글 정보가 있다면
-                    if (reply != null)
+                    //가져온 유저 아이디와 댓글 등록한 유저 아이디가 같은지 비교
+                    if (USER_LOGIN_KEY == reply.UserId)
                     {
-                        //댓글 삭제
-                        db.Remove(reply);
+                        //댓글 정보가 있다면
+                        if (reply != null)
+                        {
+                            //댓글 삭제
+                            db.Remove(reply);
 
+                        }
+
+                        var result = db.SaveChanges(); //commit
+
+                        //성공적으로 댓글이 삭제되었다면
+                        if (result > 0)
+                        {
+                            return Ok("success"); //200
+                        }
                     }
 
-                    var result = db.SaveChanges(); //commit
-
-                    //성공적으로 댓글이 삭제되었다면
-                    if (result > 0)
-                    {
-                        return Ok("success");
-                    }
                 }
 
             }
@@ -157,6 +177,7 @@ namespace BasicBoard.Controllers
                 return Redirect($"/Home/Error?msg={e.Message}");
             }
 
+            //권한이 없으면 실패 문구 발송
             return Content("댓글 삭제에 실패하였습니다."); //200
         }
     }

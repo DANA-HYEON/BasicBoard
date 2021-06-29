@@ -23,6 +23,7 @@ namespace BasicBoard.Controllers
         }
 
 
+
         [HttpGet]
         public IActionResult Login(string msg) //로그인
         {
@@ -311,14 +312,14 @@ namespace BasicBoard.Controllers
 
         //핸드폰번호 유효성 검사
         [AcceptVerbs("GET", "POST")]
-        public IActionResult VerifyPhone([RegularExpression(@"^\d{3}-\d{4}-\d{4}$")] string userPhone)
+        public IActionResult VerifyPhone([RegularExpression(@"^\d{2,3}-\d{3,4}-\d{4}$")] string userPhone)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
                     //정규식 형식에 올바르지 않으면
-                    return Json("전화번호 형식이 올바르지 않습니다. 예시 : ###-####-####");
+                    return Json("전화번호 형식이 올바르지 않습니다.");
                 }
             }
             catch (Exception e)

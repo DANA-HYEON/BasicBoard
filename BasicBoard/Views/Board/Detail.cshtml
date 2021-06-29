@@ -140,7 +140,7 @@
             var reply = {
                 ReplyContent: ReplyContent,
                 BoardNo: BoardNo,
-                UserId: USER_LOGIN_KEY
+                UserId: USER_LOGIN_KEY //세션정보
             };
 
             replyService.add(reply, function (result) {
@@ -225,13 +225,9 @@
 
             var replyLi = $(this).closest("li");
 
-            replyService.remove(replyLi.data("rno"), function (count) {
-                console.log("count : " + count);
-
-                if (count == "success") {
-                    alert("삭제되었습니다.");
-                    showList();
-                }
+            replyService.remove(replyLi.data("rno"), function (result) {
+                alert(result);
+                showList(); //댓글리스트 다시 보여주기
             }, function (result) {
 
                 //ajax통신 실패 시
